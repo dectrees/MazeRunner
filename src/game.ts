@@ -9,18 +9,23 @@ export default class Game {
     scene: Scene;
     canvas: HTMLCanvasElement;
     player!: Player;
+    enablePhysics: boolean;
 
     constructor() {
         this.canvas = document.createElement("canvas");
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
         this.canvas.id = "gameCanvas";
+        this.enablePhysics = true;
         document.body.appendChild(this.canvas);
         this.engine = new Engine(this.canvas, true);
 
-        this.initPhysics().then(() => {
-            this.initObjects();
-        });
+        if (this.enablePhysics) {
+            this.initPhysics().then(() => {
+                this.initObjects();
+            });
+        }
+
         this.scene = this.createScene(this.engine);
         this.engine.runRenderLoop(
             () => {
