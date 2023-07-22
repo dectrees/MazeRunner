@@ -1,2 +1,1 @@
-a local babylonjs playground.
-replace the createScene method to play.
+A basic babylonjs workshop with basic camera, lights, skybox, character, input control. Just add any feature to do further testing.
