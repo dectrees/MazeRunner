@@ -1,4 +1,4 @@
-import { ArcRotateCamera, Vector3, Color3, HemisphericLight, Engine, Scene, AmmoJSPlugin } from "@babylonjs/core";
+import { Vector3, Color3, Engine, Scene, AmmoJSPlugin, ArcRotateCamera, HemisphericLight } from "@babylonjs/core";
 import './index.css';
 import Ground from "./gameObject/Ground";
 import Player from "./gameObject/Player";
@@ -22,7 +22,7 @@ export default class Game {
 
         if (this.enablePhysics) {
             this.initPhysics().then(() => {
-                this.initObjects();
+                this.physicalObjects();
             });
         }
 
@@ -40,6 +40,12 @@ export default class Game {
         const physics: AmmoJSPlugin = new AmmoJSPlugin(true, ammo);
         this.scene.enablePhysics(new Vector3(0, -9.81, 0), physics);
 
+    }
+
+    
+    private physicalObjects() {
+        new Ground(0, 0, this);
+        this.player = new Player(this);
     }
 
     private createScene(engine: Engine): Scene {
@@ -60,10 +66,6 @@ export default class Game {
         return scene;
     }
 
-    initObjects() {
-        new Ground(0, 0, this);
-        this.player = new Player(this);
-    }
 }
 
 new Game()
