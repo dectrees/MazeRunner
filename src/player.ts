@@ -1,4 +1,4 @@
-import { AnimationGroup, ArcRotateCamera, FollowCamera, Mesh, Nullable, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, ArcRotateCamera, FollowCamera, Matrix, Mesh, MeshBuilder, Nullable, Quaternion, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
 import Game from "./game";
 import "@babylonjs/loaders";
 import HeroController from "./heroController";
@@ -6,6 +6,7 @@ import HeroController from "./heroController";
 export default class Player {
     private game: Game;
     scene: Scene;
+    assets;
     mesh: Mesh;
     // private heroController: HeroController;
     heroSpeed = 0.03;
@@ -57,22 +58,61 @@ export default class Player {
     }
 
     private async loadModel(scene: Scene): Promise<void> {
-        const model = await SceneLoader.ImportMeshAsync(null, "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene);
-        this.mesh = model.meshes[0] as Mesh;
-        this.mesh.scaling.scaleInPlace(0.1);
-        this.cameraFollow.attachControl(true);
+        this.assets = await this.loadCharacter(scene);
+        this.mesh = this.assets.mesh;
+        
+        //load animation
+        this.walkAnim = this.assets.animationGroups[2];
+        this.walkBackAnim = this.assets.animationGroups[3];
+        this.idleAnim = this.assets.animationGroups[0];
+        this.sambaAnim = this.assets.animationGroups[1];
 
+        this.cameraFollow.attachControl(true);
         this.currentCamera = this.cameraFollow;
         this.currentCamera.lockedTarget = this.mesh;
-        scene.activeCamera = this.currentCamera;
+        scene.activeCamera = this.cameraFollow;
 
+    }
 
-        //load animation
-        this.walkAnim = scene.getAnimationGroupByName("Walking");
-        this.walkBackAnim = scene.getAnimationGroupByName("WalkingBack");
-        this.idleAnim = scene.getAnimationGroupByName("Idle");
-        this.sambaAnim = scene.getAnimationGroupByName("Samba");
+    private async loadCharacter(scene:Scene):Promise<any>
+    {
+        const outer = MeshBuilder.CreateBox("outer", { width: 2, depth: 1, height: 3 }, scene);
+        outer.isVisible = false;
+        outer.isPickable = false;
+        outer.checkCollisions = true;
 
+        //move origin of box collider to the bottom of the mesh (to match player mesh)
+        // outer.bakeTransformIntoVertices(Matrix.Translation(0, 1.5, 0))
+        outer.position.y += 1.5;
+        //for collisions
+        outer.ellipsoid = new Vector3(1, 1.5, 1);
+        outer.ellipsoidOffset = new Vector3(0, 1.5, 0);
+
+        outer.rotationQuaternion = new Quaternion(0, 1, 0, 0); 
+
+        const result = await SceneLoader.ImportMeshAsync(null, "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene);
+        const root = result.meshes[0];
+        root.scaling.scaleInPlace(0.1);
+        //body is our actual player mesh
+        const body = root;
+        //little tricky here, as when parenting, children ganna inherit all the transformation from the parent
+        //so we have to move the children first to prevent from inheriting their parent's transformation
+        body.position.y -= 1.5;
+        body.parent = outer;
+        outer.position.y += 1.5;
+
+        body.isPickable = false;
+        // console.log("quaternion outer: ",outer.rotationQuaternion);
+        // console.log("outer rotation Y: ",outer.rotation.y);
+        body.getChildMeshes().forEach(m => {
+            m.isPickable = false;
+        })
+        
+        //return the mesh and animations
+        return {
+            mesh: outer as Mesh,
+            animationGroups: result.animationGroups
+        }
     }
 
     switchCamera(){
@@ -90,7 +130,7 @@ export default class Player {
             // this.cameraFollow.attachControl(true);
             this.scene.activeCamera = this.cameraFollow;
             this.currentCamera = this.cameraFollow;
-            this.currentCamera.rotationOffset = 180;
+            this.currentCamera.rotationOffset =180;
         }
     }
 
