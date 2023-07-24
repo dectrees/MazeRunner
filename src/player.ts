@@ -16,7 +16,7 @@ export default class Player {
 
     private cameraArc: ArcRotateCamera;
     private cameraFollow: FollowCamera;
-    private currentCamera: FollowCamera |  ArcRotateCamera;
+    currentCamera: FollowCamera |  ArcRotateCamera;
 
     walkAnim: Nullable<AnimationGroup> = null;
     walkBackAnim: Nullable<AnimationGroup> = null;
@@ -150,7 +150,7 @@ export default class Player {
         }
     }
     stop() {
-        this.idleAnim?.stop();
+        this.sambaAnim?.stop();
         this.walkAnim?.stop();
         this.walkBackAnim?.stop();
     }
