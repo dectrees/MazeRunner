@@ -4,7 +4,7 @@ import "@babylonjs/loaders";
 import HeroController from "./heroController";
 
 export default class Player {
-    private game: Game;
+    game: Game;
     scene: Scene;
     assets;
     mesh: Mesh;
@@ -95,11 +95,10 @@ export default class Player {
         root.scaling.scaleInPlace(0.1);
         //body is our actual player mesh
         const body = root;
-        //little tricky here, as when parenting, children ganna inherit all the transformation from the parent
+        //little tricky here, as when parenting, children gonna inherit all the transformation from the parent
         //so we have to move the children first to prevent from inheriting their parent's transformation
         body.position.y -= 1.5;
         body.parent = outer;
-        outer.position.y += 1.5;
 
         body.isPickable = false;
         // console.log("quaternion outer: ",outer.rotationQuaternion);
@@ -171,6 +170,10 @@ export default class Player {
                 this.mesh.rotate(Vector3.Up(), this.heroRotationSpeed);
                 break;
         }
+    }
+
+    rotate(a:number){
+        this.mesh.rotate(Vector3.Up(), a);
     }
 
 }
