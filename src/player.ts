@@ -1,4 +1,4 @@
-import { AnimationGroup, ArcRotateCamera, FollowCamera, Matrix, Mesh, MeshBuilder, Nullable, Quaternion, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, ArcRotateCamera, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
 import Game from "./game";
 import "@babylonjs/loaders";
 import HeroController from "./heroController";
@@ -16,7 +16,7 @@ export default class Player {
 
     private cameraArc: ArcRotateCamera;
     private cameraFollow: FollowCamera;
-    currentCamera: FollowCamera |  ArcRotateCamera;
+    currentCamera: ArcRotateCamera|FollowCamera;
 
     walkAnim: Nullable<AnimationGroup> = null;
     walkBackAnim: Nullable<AnimationGroup> = null;
@@ -67,10 +67,10 @@ export default class Player {
         this.idleAnim = this.assets.animationGroups[0];
         this.sambaAnim = this.assets.animationGroups[1];
 
-        this.cameraFollow.attachControl(true);
-        this.currentCamera = this.cameraFollow;
+        this.cameraArc.attachControl(this.game.canvas,true);
+        this.currentCamera = this.cameraArc;
         this.currentCamera.lockedTarget = this.mesh;
-        scene.activeCamera = this.cameraFollow;
+        scene.activeCamera = this.cameraArc;
 
     }
 
@@ -113,7 +113,7 @@ export default class Player {
             animationGroups: result.animationGroups
         }
     }
-
+ 
     switchCamera(){
         if(this.currentCamera instanceof FollowCamera){
             // console.log("switch to arc camera");
@@ -126,10 +126,11 @@ export default class Player {
         else{
             // console.log("switch to fcollow camera");
             // this.cameraArc.attachControl(false);
-            // this.cameraFollow.attachControl(true);
+            this.cameraFollow.attachControl(true);
             this.scene.activeCamera = this.cameraFollow;
             this.currentCamera = this.cameraFollow;
             this.currentCamera.rotationOffset =180;
+            this.currentCamera.lockedTarget = this.mesh;
         }
     }
 

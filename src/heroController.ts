@@ -42,9 +42,9 @@ export default class HeorController {
                     else if(this.player.currentCamera instanceof ArcRotateCamera)
                     {
                         const alpha = this.player.currentCamera.alpha;
-                        // this.player.mesh.rotation.y = Math.PI - alpha;
-                        // console.log("detected y axis rotation:",alpha);
-                        this .player.mesh.lookAt(this.player.mesh.position,Math.PI-alpha,0,0); 
+                        const targ = Quaternion.FromEulerAngles(0,3*Math.PI/2-alpha,0);
+                        this.player.mesh.rotationQuaternion = targ;
+                        // this .player.mesh.lookAt(this.player.mesh.position,Math.PI-alpha,0,0); 
                     }
                 }
             } else if (eventData.type === PointerEventTypes.POINTERUP) {
