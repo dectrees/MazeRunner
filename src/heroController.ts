@@ -1,4 +1,4 @@
-import { ActionManager, ArcRotateCamera, ExecuteCodeAction, FollowCamera, PointerEventTypes, Quaternion, Scene, Animation } from "@babylonjs/core";
+import { ActionManager, ArcRotateCamera, ExecuteCodeAction, FollowCamera, PointerEventTypes, Quaternion, Scene, Tools } from "@babylonjs/core";
 import Player from "./player";
 
 export default class HeorController {
@@ -27,7 +27,7 @@ export default class HeorController {
 
         //register mouse move
         scene.onPointerObservable.add((eventData) => {
-            if (eventData.type === PointerEventTypes.POINTERDOWN) {
+            if (eventData.type === PointerEventTypes.POINTERDOWN && eventData.event.button === 2) {
                 this.lastPointerX = eventData.event.clientX;
                 this.isPointerDown = true;
             } else if (eventData.type === PointerEventTypes.POINTERMOVE) {
@@ -35,20 +35,17 @@ export default class HeorController {
                     if (this.player.currentCamera instanceof FollowCamera) {
                         const currentPointerX = eventData.event.clientX;
                         const deltaX = currentPointerX - this.lastPointerX;
-                        // console.log("detected x axis movement:",deltaX);
                         this.lastPointerX = currentPointerX;
                         this.player.rotate(deltaX / this.angleSensibility);
                     }
                     else if(this.player.currentCamera instanceof ArcRotateCamera)
                     {
-                        const alpha = this.player.currentCamera.alpha;
-                        const targ = Quaternion.FromEulerAngles(0,3*Math.PI/2-alpha,0);
-                        this.player.mesh.rotationQuaternion = targ;
-                        // this .player.mesh.lookAt(this.player.mesh.position,Math.PI-alpha,0,0); 
+                        this.player.mouseRightKeyDown = true;
                     }
                 }
-            } else if (eventData.type === PointerEventTypes.POINTERUP) {
+            } else if (eventData.type === PointerEventTypes.POINTERUP && eventData.event.button === 2) {
                 this.isPointerDown = false;
+                this.player.mouseRightKeyDown = false;
             }
         });
     }

@@ -1,4 +1,4 @@
-import { AnimationGroup, ArcRotateCamera, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, ArcRotateCamera, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Scalar, Scene, SceneLoader, Tools, Vector3 } from "@babylonjs/core";
 import Game from "./game";
 import "@babylonjs/loaders";
 import HeroController from "./heroController";
@@ -16,7 +16,12 @@ export default class Player {
 
     private cameraArc: ArcRotateCamera;
     private cameraFollow: FollowCamera;
-    currentCamera: ArcRotateCamera|FollowCamera;
+    currentCamera: ArcRotateCamera | FollowCamera;
+    alpha: number;
+    mouseRightKeyDown: boolean = false;
+    angleFollowTarget: number = 0;
+    angleFollowStep: number = 0;
+    angleFollowDone: number = 0;
 
     walkAnim: Nullable<AnimationGroup> = null;
     walkBackAnim: Nullable<AnimationGroup> = null;
@@ -26,12 +31,51 @@ export default class Player {
     constructor(game: Game) {
         this.game = game;
         this.scene = game.scene;
-        
-        this.cameraFollow = this.initFollowCamera(this.scene);
+
         this.cameraArc = this.initArcCamera(this.scene);
-        this.loadModel(this.scene);
+        this.cameraFollow = this.initFollowCamera(this.scene);
+
         new HeroController(this);
+        this.loadModel(this.scene).then(() => {
+            this.scene.onBeforeRenderObservable.add(() => {
+                this._updateFrame();
+            });
+        }
+        );
     }
+    private _updateFrame() {
+
+        if (this.currentCamera instanceof ArcRotateCamera && this.mouseRightKeyDown) {
+            let source = this.mesh.rotationQuaternion;
+            // console.log("mesh rotationQuaternion:",source);
+            if (source) {
+                this.alpha = this.currentCamera.alpha;
+                // console.log("alpha:",Tools.ToDegrees(this.alpha));
+                let target = Quaternion.FromEulerAngles(0, 3 * Math.PI / 2 - this.alpha, 0);
+                this.mesh.rotationQuaternion = Quaternion.Slerp(source, target, 0.2);
+
+            }
+            else {
+                console.log("source is null");
+            }
+        }
+        // if (this.currentCamera instanceof FollowCamera) {
+        //     if (this.angleFollowDone < this.angleFollowTarget) {
+        //         this.angleFollowStep = Scalar.Lerp(this.angleFollowStep, this.angleFollowTarget, 0.3);
+        //         this.mesh.rotate(Vector3.Up(), this.angleFollowStep);
+        //         console.log("rotation step:",this.angleFollowStep);
+        //         this.angleFollowDone += this.angleFollowStep;
+        //     }
+        // }
+
+    }
+
+    rotate(a: number) {
+        this.mesh.rotate(Vector3.Up(), a);
+        // this.angleFollowTarget = a;
+        // console.log("rotate target:",this.angleFollowTarget);
+    }
+
 
     //ArcRotateCamera
     private initArcCamera(scene: Scene): ArcRotateCamera {
@@ -57,25 +101,40 @@ export default class Player {
 
     }
 
+    switchCamera() {
+        if (this.currentCamera instanceof FollowCamera) {
+            this.cameraArc.attachControl(this.game.canvas, true);
+            this.cameraArc._panningMouseButton = 1;
+            this.scene.activeCamera = this.cameraArc;
+            this.currentCamera = this.cameraArc;
+            this.currentCamera.lockedTarget = this.mesh;
+        }
+        else {
+            this.cameraFollow.attachControl(true);
+            this.scene.activeCamera = this.cameraFollow;
+            this.currentCamera = this.cameraFollow;
+            this.currentCamera.rotationOffset = 180;
+            this.currentCamera.lockedTarget = this.mesh;
+        }
+    }
+
     private async loadModel(scene: Scene): Promise<void> {
         this.assets = await this.loadCharacter(scene);
         this.mesh = this.assets.mesh;
-        
         //load animation
         this.walkAnim = this.assets.animationGroups[2];
         this.walkBackAnim = this.assets.animationGroups[3];
         this.idleAnim = this.assets.animationGroups[0];
         this.sambaAnim = this.assets.animationGroups[1];
 
-        this.cameraArc.attachControl(this.game.canvas,true);
+        this.cameraArc.attachControl(this.game.canvas, true);
+        this.cameraArc._panningMouseButton = 1;
         this.currentCamera = this.cameraArc;
         this.currentCamera.lockedTarget = this.mesh;
         scene.activeCamera = this.cameraArc;
-
     }
 
-    private async loadCharacter(scene:Scene):Promise<any>
-    {
+    private async loadCharacter(scene: Scene): Promise<any> {
         const outer = MeshBuilder.CreateBox("outer", { width: 2, depth: 1, height: 3 }, scene);
         outer.isVisible = false;
         outer.isPickable = false;
@@ -88,49 +147,27 @@ export default class Player {
         outer.ellipsoid = new Vector3(1, 1.5, 1);
         outer.ellipsoidOffset = new Vector3(0, 1.5, 0);
 
-        outer.rotationQuaternion = new Quaternion(0, 1, 0, 0); 
-
+        outer.rotationQuaternion = new Quaternion(0, 1, 0, 0);
+        // outer.rotationQuaternion = Quaternion.FromEulerAngles(0,Math.PI,0);
+        // console.log("outer rotationQuaternion:",outer.rotationQuaternion);
         const result = await SceneLoader.ImportMeshAsync(null, "https://assets.babylonjs.com/meshes/", "HVGirl.glb", scene);
         const root = result.meshes[0];
         root.scaling.scaleInPlace(0.1);
         //body is our actual player mesh
         const body = root;
-        //little tricky here, as when parenting, children gonna inherit all the transformation from the parent
-        //so we have to move the children first to prevent from inheriting their parent's transformation
         body.position.y -= 1.5;
         body.parent = outer;
-
         body.isPickable = false;
         // console.log("quaternion outer: ",outer.rotationQuaternion);
         // console.log("outer rotation Y: ",outer.rotation.y);
         body.getChildMeshes().forEach(m => {
             m.isPickable = false;
         })
-        
+
         //return the mesh and animations
         return {
             mesh: outer as Mesh,
             animationGroups: result.animationGroups
-        }
-    }
- 
-    switchCamera(){
-        if(this.currentCamera instanceof FollowCamera){
-            // console.log("switch to arc camera");
-            // this.cameraFollow.attachControl(false);
-            this.cameraArc.attachControl(this.game.canvas,true);
-            this.scene.activeCamera = this.cameraArc;
-            this.currentCamera = this.cameraArc;
-            this.currentCamera.lockedTarget = this.mesh;
-        }
-        else{
-            // console.log("switch to fcollow camera");
-            // this.cameraArc.attachControl(false);
-            this.cameraFollow.attachControl(true);
-            this.scene.activeCamera = this.cameraFollow;
-            this.currentCamera = this.cameraFollow;
-            this.currentCamera.rotationOffset =180;
-            this.currentCamera.lockedTarget = this.mesh;
         }
     }
 
@@ -171,10 +208,6 @@ export default class Player {
                 this.mesh.rotate(Vector3.Up(), this.heroRotationSpeed);
                 break;
         }
-    }
-
-    rotate(a:number){
-        this.mesh.rotate(Vector3.Up(), a);
     }
 
 }
