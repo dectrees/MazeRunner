@@ -12,16 +12,14 @@ export default class Player {
     heroSpeed = 0.03;
     heroSpeedBackwards = 0.01;
     heroRotationSpeed = 0.05;
-
+    heroAnimation = 1.0;
+    rush:boolean = false;
 
     private cameraArc: ArcRotateCamera;
     private cameraFollow: FollowCamera;
     currentCamera: ArcRotateCamera | FollowCamera;
     alpha: number;
     mouseRightKeyDown: boolean = false;
-    angleFollowTarget: number = 0;
-    angleFollowStep: number = 0;
-    angleFollowDone: number = 0;
 
     walkAnim: Nullable<AnimationGroup> = null;
     walkBackAnim: Nullable<AnimationGroup> = null;
@@ -59,21 +57,11 @@ export default class Player {
                 console.log("source is null");
             }
         }
-        // if (this.currentCamera instanceof FollowCamera) {
-        //     if (this.angleFollowDone < this.angleFollowTarget) {
-        //         this.angleFollowStep = Scalar.Lerp(this.angleFollowStep, this.angleFollowTarget, 0.3);
-        //         this.mesh.rotate(Vector3.Up(), this.angleFollowStep);
-        //         console.log("rotation step:",this.angleFollowStep);
-        //         this.angleFollowDone += this.angleFollowStep;
-        //     }
-        // }
 
     }
 
     rotate(a: number) {
         this.mesh.rotate(Vector3.Up(), a);
-        // this.angleFollowTarget = a;
-        // console.log("rotate target:",this.angleFollowTarget);
     }
 
 
@@ -171,19 +159,20 @@ export default class Player {
         }
     }
 
-    play(act: string) {
+    play(act: string,acc:number=0) {
+        let speed = this.heroAnimation +acc;
         switch (act) {
             case "idle":
-                this.idleAnim?.start(true, 1.0, this.idleAnim.from, this.idleAnim.to, false);
+                this.idleAnim?.start(true, speed, this.idleAnim.from, this.idleAnim.to, false);
                 break;
             case "samba":
-                this.sambaAnim?.start(true, 1.0, this.sambaAnim.from, this.sambaAnim.to, false);
+                this.sambaAnim?.start(true, speed, this.sambaAnim.from, this.sambaAnim.to, false);
                 break;
             case "forward":
-                this.walkAnim?.start(true, 1.0, this.walkAnim.from, this.walkAnim.to, false);
+                this.walkAnim?.start(true, speed, this.walkAnim.from, this.walkAnim.to, false);
                 break;
             case "back":
-                this.walkBackAnim?.start(true, 1.0, this.walkBackAnim.from, this.walkBackAnim.to, false);
+                this.walkBackAnim?.start(true, speed, this.walkBackAnim.from, this.walkBackAnim.to, false);
                 break;
         }
     }
@@ -196,16 +185,24 @@ export default class Player {
     move(act: string) {
         switch (act) {
             case "w":
-                this.mesh.moveWithCollisions(this.mesh.forward.scaleInPlace(this.heroSpeed));
+                if(this.rush)
+                this.mesh.moveWithCollisions(this.mesh.forward.scaleInPlace(this.heroSpeed+0.03));
+                else this.mesh.moveWithCollisions(this.mesh.forward.scaleInPlace(this.heroSpeed));
                 break;
             case "s":
-                this.mesh.moveWithCollisions(this.mesh.forward.scaleInPlace(-this.heroSpeedBackwards));
+                if(this.rush)
+                this.mesh.moveWithCollisions(this.mesh.forward.scaleInPlace(-this.heroSpeedBackwards-0.01));
+                else this.mesh.moveWithCollisions(this.mesh.forward.scaleInPlace(-this.heroSpeedBackwards));
                 break;
             case "a":
-                this.mesh.rotate(Vector3.Up(), -this.heroRotationSpeed);
+                if(this.rush)
+                this.mesh.rotate(Vector3.Up(), -this.heroRotationSpeed-0.03);
+                else this.mesh.rotate(Vector3.Up(), -this.heroRotationSpeed);
                 break;
             case "d":
-                this.mesh.rotate(Vector3.Up(), this.heroRotationSpeed);
+                if(this.rush)
+                this.mesh.rotate(Vector3.Up(), this.heroRotationSpeed+0.03);
+                else this.mesh.rotate(Vector3.Up(), this.heroRotationSpeed);
                 break;
         }
     }

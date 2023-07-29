@@ -7,7 +7,7 @@ export default class HeorController {
     private animating = true;
     private lastPointerX: number = 0;
     private isPointerDown: boolean = false;
-    private angleSensibility: number = 500;
+    private angleSensibility: number = 300;
 
     constructor(player: Player) {
         this.player = player;
@@ -19,10 +19,10 @@ export default class HeorController {
         scene.actionManager = new ActionManager(scene);
         this.inputMap = {};
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (evt) => {
-            this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+            this.inputMap[evt.sourceEvent.key] = true;
         }));
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (evt) => {
-            this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+            this.inputMap[evt.sourceEvent.key] = false;
         }));
 
         //register mouse move
@@ -54,12 +54,12 @@ export default class HeorController {
         scene.onBeforeRenderObservable.add(() => {
             var keydown = false;
             //Manage the movements of the character (e.g. position, direction)
-            if (this.inputMap["w"]) {
-                this.player.move("w");
+            if (this.inputMap["w"]) {    
+                this.player.move("w");               
                 keydown = true;
             }
             if (this.inputMap["s"]) {
-                this.player.move("s");
+                this.player.move("s");       
                 keydown = true;
             }
             if (this.inputMap["a"]) {
@@ -76,6 +76,10 @@ export default class HeorController {
             if (this.inputMap["c"]) {
                 keydown = true;
             }
+            if (this.inputMap["Shift"])
+            {
+                keydown  = true;
+            }
 
             //Manage animations to be played  
             if (keydown) {
@@ -83,20 +87,42 @@ export default class HeorController {
                     this.animating = true;
                     if (this.inputMap["s"]) {
                         //Walk backwards
-                        this.player.play("back");
+                        if(this.player.rush)
+                        {
+                            // console.log("play back,fast");
+                            this.player.play("back",0.5);
+                        }
+                        else{
+                            // console.log("play back,normal");
+                            this.player.play("back");
+                        }
                     }
                     else if
                         (this.inputMap["b"]) {
                         //Samba!
-                        this.player.play("samba");
+                         this.player.play("samba");                       
                     }
                     else if
                         (this.inputMap["c"]) {
                         this.player.switchCamera();
                     }
+                    else if(this.inputMap["Shift"])
+                    {
+                        this.player.rush = !this.player.rush;
+                        // console.log("rush:",this.player.rush);
+                    }
                     else {
                         //Walk
-                        this.player.play("forward");
+                        if(this.player.rush)
+                        {
+                            // console.log("key down,play fast");
+                            this.player.play("forward",0.5);
+                        }
+                        else
+                        {
+                            // console.log("key down, play normal")
+                            this.player.play("forward");
+                        }
                     }
                 }
             }
@@ -111,6 +137,7 @@ export default class HeorController {
 
                     //Ensure animation are played only once per rendering loop
                     this.animating = false;
+                    // console.log("stop animation");
                 }
             }
         });
