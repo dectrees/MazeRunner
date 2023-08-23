@@ -1,1 +1,1 @@
-A basic babylonjs workshop with basic camera, lights, skybox, character, input control. Just add any feature to do further testing.git
+trying to make a third person game with basic techniques accumulated from repo asymmetry and workshop.
