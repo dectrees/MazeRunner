@@ -1,10 +1,12 @@
 import { Mesh, Color3, Color4, MeshBuilder, Scene, SolidParticleSystem, StandardMaterial, Texture, Vector3, ShadowGenerator, DirectionalLight, VertexData } from "@babylonjs/core";
 import Animations from "./Animations";
 import Robot from "./Robot";
+import Hero from "./Hero";
+import ParticleController from "./ParticleController";
 export default class Level {
     size: number;
     scene: Scene;
-    level: number;
+    nlevel: number;
     nbBuildings = 300;
     fact: number;   // density
     scaleX: number;
@@ -19,31 +21,46 @@ export default class Level {
     banditClone: boolean = true;
     robot:Robot;
     staticMesh;
+    hero:Hero;
+    navKeyDown = false;
+    navReady = false;
+    init = true;
 
-    constructor(scene: Scene, level: number) {
+     //particle system
+     pc: ParticleController;
+
+    constructor(scene: Scene, nlevel: number) {
         this.size = 500;
         this.scene = scene;
-        this.level = level;
+        this.nlevel = nlevel;
         this.fact = 50;   // density
         this.scaleX = 0.0;
         this.scaleY = 0.0;
         this.scaleZ = 0.0;
         this.grey = 0.0;
         this.uvSize = 0.0;
+        this.shadowGenerator = this.createShadowCast(scene);
         this.staticMesh = this.buildLevel(scene);
-        this.gameObjects(this.scene);
+        this.fireball = this.gameObjects(scene);
         this.ani = new Animations();
-        this.robot = new Robot(scene,this);
-    }
-    private buildLevel(scene: Scene) {
+        this.pc = new ParticleController(this.scene,this.fireball,this); 
+        this.hero = new Hero(this);
+        this.robot = new Robot(scene,this,this.hero);
 
+    }
+
+    private createShadowCast(scene:Scene)
+    {
         var light0 = new DirectionalLight("light", new Vector3(0, -1, 0), scene);
         light0.position = new Vector3(20, 40, 20);
         // Default intensity is 1. Let's dim the light a small amount
         light0.intensity = 0.4;
         light0.specular = new Color3(1, 0.76, 0.76);
-        this.shadowGenerator = new ShadowGenerator(1024, light0);
-        
+        var shadowGenerator = new ShadowGenerator(1024, light0);
+        return shadowGenerator;
+    }
+    private buildLevel(scene: Scene) {
+
         // Ground
         // var ground = MeshBuilder.CreateGround("ground", { height: this.size, width: this.size, subdivisions: 4 }, scene);
         // var groundMaterial = new StandardMaterial("groundMaterial", scene);
@@ -89,6 +106,7 @@ export default class Level {
         matground.specularColor = new Color3(.1, .1, .1);
         matground.backFaceCulling = false;
         customMesh.receiveShadows = true;
+        // customMesh.isPickable = true;
 
         //SPS 
         var url = "./src/assets/texture/glassbuilding.jpg";
@@ -181,19 +199,18 @@ export default class Level {
         platform1.material = platmtl;
         platform1.checkCollisions = true;
 
-        this.fireball = MeshBuilder.CreateSphere("ball platform", { diameter: 0.5 }, scene);
-        this.fireball.material = platmtl;
+        var fireball = MeshBuilder.CreateSphere("ball platform", { diameter: 0.5 }, scene);
+        fireball.material = platmtl;
         // this.fireball.position.x = 4;
-        this.fireball.position.y = 6;
-        this.fireball.isVisible = true;
-        this.fireball.checkCollisions = false;
+        fireball.position.y = 6;
+        fireball.isVisible = true;
+        fireball.checkCollisions = false;
 
 
         //shadows setting
         platform1.receiveShadows = true;
         this.shadowGenerator.getShadowMap()?.renderList?.push(platform1);
-        // if (this.player) this.shadowGenerator.getShadowMap()?.renderList?.push(this.player);
-
+        return fireball;
     }
 
 }

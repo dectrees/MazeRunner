@@ -1,25 +1,22 @@
 import { ArcRotateCamera, Color3, Mesh, MeshBuilder, Nullable, Quaternion, Ray, RayHelper, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
-import Game from "./Game";
 import Level from "./Level";
 import HeorController from "./HeroController";
 export default class Hero {
-    game: Game;
+    level: Level;
     scene: Scene;
-    level:Level;
     camera;
     heroController:HeorController;
     mesh:Mesh;
     shadowGenerator: ShadowGenerator;
     
-    constructor(game: Game,level:Level) {
-        this.game = game;
-        this.scene = game.scene;
+    constructor(level: Level) {
         this.level = level;
+        this.scene = level.scene;
         this.shadowGenerator = level.shadowGenerator;
         this.camera = this.createCamera(this.scene);
-        this.heroController = new HeorController(this);
+        
         this.initHero(this.scene);
-
+        this.heroController = new HeorController(this,level);
     }
 
 

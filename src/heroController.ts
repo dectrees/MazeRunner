@@ -1,9 +1,11 @@
-import { ActionManager, Axis, ExecuteCodeAction, Matrix, Mesh, Nullable, Quaternion, Scene, Vector3,ParticleSystem, RayHelper, PointerEventTypes, Ray } from "@babylonjs/core";
+import { ActionManager, Axis, ExecuteCodeAction, Matrix, Mesh, Nullable, Quaternion, Scene, Vector3, ParticleSystem, RayHelper, PointerEventTypes, Ray } from "@babylonjs/core";
 import Hero from "./Hero";
 import ParticleController from "./ParticleController"
+import Level from "./Level";
 export default class HeorController {
     scene: Scene;
     player;
+    level: Level;
     inputMap = {};
     source = Quaternion.FromEulerAngles(0, 0, 0);
     target = Quaternion.FromEulerAngles(0, 0, 0);
@@ -23,13 +25,12 @@ export default class HeorController {
     dxn = 0; //which dxn dash should go
     dashing = false;
 
-    //particle system
-    pc: ParticleController;
-    fireball:Mesh;
-    bullet: Mesh;
-    bandit:Mesh;
- 
 
+    fireball: Mesh;
+    bullet: Mesh;
+    bandit: Mesh;
+
+    pc: ParticleController;
     fireStatus = false;
     fireRanger = 50;
     fireVelocity = 0.1;
@@ -41,18 +42,20 @@ export default class HeorController {
     banditReady: boolean = false;
 
 
-    constructor(player: Hero) {
+    constructor(player: Hero, level: Level) {
         this.scene = player.scene;
         this.player = player;
+        this.level = level;
         this.registerPointerHandler();
         this.scene.onBeforeRenderObservable.add(() => {
             // this._updateSPS();
             this._updateFrame();
             this._checkInput(this.scene);
         });
-        this.fireball = this.player.level.fireball;
-        this.bandit = this.player.level.bandit;
-        this.pc = new ParticleController(this.scene,this.fireball,this.player.level); 
+        this.fireball = player.level.fireball;
+        this.bandit = player.level.bandit;
+
+        this.pc = level.pc;
         this.registerAction(this.scene);
         this.registerUpdate(this.scene);
     }
@@ -108,6 +111,17 @@ export default class HeorController {
             this.scene.beginAnimation(this.bandit, 0, 4 * this.player.level.ani.frameRate, true);
         }
         if (this.player) {
+            // console.log("navReady:",this.level.navReady);
+            // console.log("level init:",this.level.init);
+            if (this.level.navReady && this.level.init) {
+                // console.log("finding start point");
+                var startPoint = this.level.robot.getStartPoint(new Vector3(0, 0.1, 0));
+                if (startPoint) {
+                    console.log("found a startPoint:", startPoint);
+                    this.player.mesh.position = startPoint;
+                }
+                this.level.init = false;
+            }
             if (this.isPointerDown) {
 
                 this.source = this.player.mesh.rotationQuaternion!;
@@ -124,7 +138,7 @@ export default class HeorController {
 
             if (!this.bullet) {
                 if (this.pc.fireReady) {
-                    console.log("clone a new fireball");
+                    // console.log("clone a new fireball");
                     this.bullet = this.fireball.clone();
                     if (this.player) {
                         this.bullet.position = Vector3.Zero();
@@ -192,7 +206,7 @@ export default class HeorController {
                                 this.pc.ps?.stop();
                                 if (this.pc.ps) this.pc.ps.emitter = null;
                                 this.lightup = false;
-                                this.pc.doExplode(this.scene,this.bandit);
+                                this.pc.doExplode(this.scene, this.bandit);
                                 this.bandit = null;
                             }, 3000);
                         }
@@ -302,7 +316,7 @@ export default class HeorController {
             }
         }
     }
-    
+
     private isPointerDown: boolean = false;
     private registerPointerHandler() {
 
@@ -340,7 +354,7 @@ export default class HeorController {
                     // console.log("jumpKeyDown");
                 }
                 if (evt.sourceEvent.key == "z") {
-                    this.navKeyDown = true;
+                    this.level.navKeyDown = true;
                 }
             }
         }));
@@ -355,7 +369,7 @@ export default class HeorController {
                     // console.log("jumpKeyDown");
                 }
                 if (evt.sourceEvent.key == "z") {
-                    this.navKeyDown = false;
+                    this.level.navKeyDown = false;
                 }
             }
         }));

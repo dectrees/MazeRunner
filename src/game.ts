@@ -10,6 +10,7 @@ export default class Game {
     engine: Engine;
     scene: Scene;
     canvas: HTMLCanvasElement;
+    level:Level;
 
     constructor() {
         this.canvas = document.createElement("canvas");
@@ -40,8 +41,7 @@ export default class Game {
         new World(scene);
         // new Player(this);
        
-        new Hero(this, new Level(scene, 1));
-
+        this.level = new Level(scene, 1);
     }
 
 }
