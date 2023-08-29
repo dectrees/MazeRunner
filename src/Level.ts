@@ -184,7 +184,11 @@ export default class Level {
 
         // console.log([customMesh, mesh].map((t)=>t.getVerticesDataKinds()));
         var staticmesh = Mesh.MergeMeshes([customMesh,mesh], true, true, undefined, false, true);
-        if (staticmesh) staticmesh.receiveShadows = true;
+        if (staticmesh) 
+        {
+            staticmesh.receiveShadows = true;
+            // staticmesh.checkCollisions = true;
+        }
         return staticmesh;
     }
 

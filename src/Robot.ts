@@ -1,4 +1,4 @@
-import { Color3, Mesh, MeshBuilder, Nullable, PointerEventTypes, RecastJSPlugin, Scene, StandardMaterial, TransformNode, Vector3 } from "@babylonjs/core";
+import { Color3, Mesh, MeshBuilder, Nullable, PointerEventTypes, RecastJSPlugin, Scalar, Scene, StandardMaterial, TransformNode, Vector3 } from "@babylonjs/core";
 import Recast from "recast-detour";
 import Level from "./Level";
 import Hero from "./Hero";
@@ -14,7 +14,7 @@ export default class Robot {
     currentMesh?: Mesh;
     navKeyDown = false;
     navmeshParameters = {
-        cs: 1,
+        cs: 2,
         ch: 1,
         walkableSlopeAngle: 90,
         walkableHeight: 1.0,
@@ -80,12 +80,24 @@ export default class Robot {
 
     getStartPoint(v:Vector3)
     {
+        var origin = new Vector3(0,0,0);
         if(this.navigationPlugin)
         {
             // console.log("trying find startPoint");
-            return this.navigationPlugin.getRandomPointAround(v, 10)
+           
+            var sp = this.navigationPlugin.getRandomPointAround(v, 10);
+
+            for(let i =0;i<3;i++)
+            {
+                if(JSON.stringify(sp) != JSON.stringify(origin)) break;
+                console.log("orgin,try again");
+                v.x = Scalar.RandomRange(-50,50);
+                v.z = Scalar.RandomRange(-50,50);
+                sp = this.navigationPlugin.getRandomPointAround(v, 10);
+            }
+            return sp;
         }
-        return null;
+        return origin;
     }
 
     private _initCrowd(scene: Scene) {
@@ -133,27 +145,27 @@ export default class Robot {
                 this.agents.push({ idx: agentIndex, trf: transform, mesh: agentCube, target: targetCube });
             }
 
-            // setInterval(()=>{
-            //     if (this.navigationPlugin &&this.player) {
-            //         // console.log("reset distance:",this.restDistance);
-            //         var agents = this.crowd.getAgents();
-            //         if(!this.onMission)
-            //         { 
-            //             var i;
-            //             for (i = 0; i < agents.length; i++) {
-            //                 this.crowd.agentGoto(agents[i], this.navigationPlugin.getClosestPoint(this.player.position));
-            //             }
-            //         }
-            //         else if(this.restDistance < 0.5)
-            //         {
-            //             var i;
-            //             for (i = 0; i < agents.length; i++) {
-            //                 this.crowd.agentGoto(agents[i], this.navigationPlugin.getClosestPoint(this.player.position));
-            //             }
-            //             this.onMission = false;
-            //         }
-            //     }
-            // },3000);
+            setInterval(()=>{
+                if (this.navigationPlugin &&this.player) {
+                    // console.log("reset distance:",this.restDistance);
+                    var agents = this.crowd.getAgents();
+                    if(!this.onMission)
+                    { 
+                        var i;
+                        for (i = 0; i < agents.length; i++) {
+                            this.crowd.agentGoto(agents[i], this.navigationPlugin.getClosestPoint(this.player.position));
+                        }
+                    }
+                    else if(this.restDistance < 0.5)
+                    {
+                        var i;
+                        for (i = 0; i < agents.length; i++) {
+                            this.crowd.agentGoto(agents[i], this.navigationPlugin.getClosestPoint(this.player.position));
+                        }
+                        this.onMission = false;
+                    }
+                }
+            },3000);
 
             var getGroundPosition = function () {
                 var pickinfo = scene.pick(scene.pointerX, scene.pointerY);
