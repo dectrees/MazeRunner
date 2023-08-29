@@ -14,8 +14,8 @@ export default class World {
         light.intensity = 0.6;
         light.specular = Color3.Black();
 
-        var light2 = new DirectionalLight("dir01", new Vector3(0, -0.5, -1.0), scene);
-        light2.position = new Vector3(0, 5, 5);
+        // var light2 = new DirectionalLight("dir01", new Vector3(0, -0.5, -1.0), scene);
+        // light2.position = new Vector3(0, 5, 5);
 
         // Skybox
         var skybox = MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
@@ -30,21 +30,12 @@ export default class World {
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         var instructions = new GUI.TextBlock();
-        instructions.text = "Move w/ WASD keys, B for Samba, C to Change Camera, look with the mouse";
+        instructions.text = "Move w/ WASD keys, look with the mouse";
         instructions.color = "white";
         instructions.fontSize = 16;
         instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
         instructions.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM
         advancedTexture.addControl(instructions);
-
-        // Ground
-        var ground = MeshBuilder.CreateGround("ground", { height: 50, width: 50, subdivisions: 4 }, scene);
-        var groundMaterial = new StandardMaterial("groundMaterial", scene);
-        groundMaterial.diffuseTexture = new Texture("https://assets.babylonjs.com/textures/wood.jpg", scene);
-        groundMaterial.diffuseTexture.uScale = 30;
-        groundMaterial.diffuseTexture.vScale = 30;
-        groundMaterial.specularColor = new Color3(.1, .1, .1);
-        ground.material = groundMaterial;
 
     }
 }

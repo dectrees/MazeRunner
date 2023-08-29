@@ -1,7 +1,7 @@
 import { AnimationGroup, ArcRotateCamera, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Scalar, Scene, SceneLoader, Tools, Vector3 } from "@babylonjs/core";
-import Game from "./game";
+import Game from "./Game";
 import "@babylonjs/loaders";
-import HeroController from "./heroController";
+import PlayerController from "./PlayerController";
 
 export default class Player {
     game: Game;
@@ -9,10 +9,10 @@ export default class Player {
     assets;
     mesh: Mesh;
     // private heroController: HeroController;
-    heroSpeed = 0.03;
-    heroSpeedBackwards = 0.01;
+    heroSpeed = 0.3;
+    heroSpeedBackwards = 0.1;
     heroRotationSpeed = 0.05;
-    heroAnimation = 1.0;
+    heroAnimation = 2.5;
     rush:boolean = false;
 
     private cameraArc: ArcRotateCamera;
@@ -33,7 +33,7 @@ export default class Player {
         this.cameraArc = this.initArcCamera(this.scene);
         this.cameraFollow = this.initFollowCamera(this.scene);
 
-        new HeroController(this);
+        new PlayerController(this);
         this.loadModel(this.scene).then(() => {
             this.scene.onBeforeRenderObservable.add(() => {
                 this._updateFrame();
@@ -67,23 +67,23 @@ export default class Player {
 
     //ArcRotateCamera
     private initArcCamera(scene: Scene): ArcRotateCamera {
-        var camera1 = new ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, 10, new Vector3(0, 2, 0), scene);
+        var camera1 = new ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, 10, new Vector3(0, 1, 0), scene);
         camera1.lowerRadiusLimit = 5;
-        camera1.upperRadiusLimit = 30;
+        camera1.upperRadiusLimit = 500;
         camera1.upperBetaLimit = Math.PI / 2.1;
         camera1.lowerBetaLimit = Math.PI / 4;
         camera1.wheelDeltaPercentage = 0.01;
+        camera1.checkCollisions = true;
         return camera1;
     }
 
     private initFollowCamera(scene: Scene): FollowCamera {
-        var camera = new FollowCamera("tankFollowCamera", new Vector3(10, 0, 10), scene);
-        camera.heightOffset = 3;
+        var camera = new FollowCamera("tankFollowCamera", new Vector3(1, 0, 1), scene);
+        camera.heightOffset = 1;
         camera.rotationOffset = 180;
         camera.cameraAcceleration = .1;
         camera.maxCameraSpeed = 1;
-        camera.radius = 8;
-
+        camera.radius = 10;
         camera.inputs.removeByType('FollowCameraPointersInput');
         return camera;
 
@@ -130,7 +130,7 @@ export default class Player {
 
         //move origin of box collider to the bottom of the mesh (to match player mesh)
         // outer.bakeTransformIntoVertices(Matrix.Translation(0, 1.5, 0))
-        outer.position.y += 1.5;
+        outer.position.y +=1.5;
         //for collisions
         outer.ellipsoid = new Vector3(1, 1.5, 1);
         outer.ellipsoidOffset = new Vector3(0, 1.5, 0);

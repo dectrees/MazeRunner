@@ -1,7 +1,9 @@
 import { Engine, Scene } from "@babylonjs/core";
 import './index.css';
-import Player from "./player";
-import World from "./world";
+import Player from "./Player";
+import World from "./World";
+import Level from "./Level";
+import Hero from "./Hero";
 
 
 export default class Game {
@@ -17,8 +19,15 @@ export default class Game {
         document.body.appendChild(this.canvas);
         this.engine = new Engine(this.canvas, true);
         this.scene = new Scene(this.engine);
+        this.scene.collisionsEnabled = true;
         this.engine.enableOfflineSupport = false;
         this.gameinit(this.scene);
+
+        window.addEventListener("resize", () => {
+            if (this.engine) {
+                this.engine.resize();
+            }
+        });
 
         this.engine.runRenderLoop(
             () => {
@@ -27,9 +36,12 @@ export default class Game {
         );
     }
 
-    private gameinit(scene:Scene){
+    private gameinit(scene: Scene) {
         new World(scene);
-        new Player(this);
+        // new Player(this);
+       
+        new Hero(this, new Level(scene, 1));
+
     }
 
 }
