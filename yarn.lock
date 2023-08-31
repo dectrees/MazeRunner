@@ -220,10 +220,10 @@
   resolved "https://registry.npmjs.org/@babylonjs/core/-/core-6.11.1.tgz"
   integrity sha512-H1FowB/pQgcqAFnC6v8Qpl/uLiFqP94ycskZfqnx0J+LZ31O7BxcrICdAyv8hz6mi979B3Bw20AgiDun1z8UOg==
 
-"@babylonjs/gui@^6.13.0":
-  version "6.13.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-6.13.0.tgz#a7f079b6497ff920f1e0d661298a11f1f4cfbe34"
-  integrity sha512-FWKgsIrzgVpf2jaANVyubwRPlmoXpi5v8D3hnhC/l4Tzfq8PKXc5JLHqLO7NxVZdRwnNVeM3bETWJSnq9eBZ2A==
+"@babylonjs/gui@^6.19.0":
+  version "6.19.0"
+  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-6.19.0.tgz#f43adc15d1d31c04e76009fda77d1432d70762bc"
+  integrity sha512-w37RgJsf9oCqST1kl54LkONq/zkSKXRfajcSk+oELYZKTIykD0nrJqsD7Cd0XzJ4mOplIvtvmZqczQ+JH1Fp5A==
 
 "@babylonjs/loaders@^6.13.0":
   version "6.13.0"

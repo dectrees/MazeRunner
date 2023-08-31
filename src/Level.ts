@@ -3,6 +3,7 @@ import Animations from "./Animations";
 import Robot from "./Robot";
 import Hero from "./Hero";
 import ParticleController from "./ParticleController";
+import UI from "./GUI";
 export default class Level {
     size: number;
     scene: Scene;
@@ -28,6 +29,7 @@ export default class Level {
     init = true;
     alien:Mesh;
     enableWandering = false;
+    UI;
 
      //particle system
      pc: ParticleController;
@@ -45,6 +47,7 @@ export default class Level {
         this.shadowGenerator = this.createShadowCast(scene);
         this.staticMesh = this.buildLevel(scene);
         this.ani = new Animations(1);
+        this.UI = new UI();
 
         this.fireball = this.gameObjects(scene);
         this.pc = new ParticleController(this.scene,this.fireball,this); 

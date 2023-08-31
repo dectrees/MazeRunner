@@ -88,6 +88,7 @@ export default class ParticleController {
         this.buildSPS(this.sps, s.position.y);
 
         this.boom = true;
+        this.level.UI.updateCount();
         setTimeout(() => {
             this.boom = false;
             this.sps.dispose();

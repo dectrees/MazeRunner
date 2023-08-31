@@ -28,14 +28,14 @@ export default class World {
         skybox.material = skyboxMaterial;
 
         // GUI
-        var advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        var instructions = new GUI.TextBlock();
-        instructions.text = "Move WASD keys,  Jump Space, Fire F";
-        instructions.color = "white";
-        instructions.fontSize = 16;
-        instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
-        instructions.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM
-        advancedTexture.addControl(instructions);
+        // var advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        // var instructions = new GUI.TextBlock();
+        // instructions.text = "Move WASD keys,  Jump Space, Fire F";
+        // instructions.color = "white";
+        // instructions.fontSize = 16;
+        // instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT
+        // instructions.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM
+        // advancedTexture.addControl(instructions);
 
     }
 }

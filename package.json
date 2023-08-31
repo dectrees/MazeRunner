@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babylonjs/core": "^6.11.1",
-    "@babylonjs/gui": "^6.13.0",
+    "@babylonjs/gui": "^6.19.0",
     "@babylonjs/loaders": "^6.13.0",
     "ammojs-typed": "^1.0.6",
     "react": "^18.2.0",

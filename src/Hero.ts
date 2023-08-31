@@ -44,6 +44,7 @@ export default class Hero {
         camera.lowerBetaLimit = Math.PI / 4;
         camera.attachControl(scene.getEngine().getRenderingCanvas(), true);
         camera._panningMouseButton = 1;
+        // camera.checkCollisions = true;
         return camera;
     }
 
