@@ -1,4 +1,4 @@
-import { ActionManager, Axis, ExecuteCodeAction, Matrix, Mesh, Nullable, Quaternion, Scene, Vector3, ParticleSystem, RayHelper, PointerEventTypes, Ray } from "@babylonjs/core";
+import { ActionManager, Axis, ExecuteCodeAction, Matrix, Mesh, Nullable, Quaternion, Scene, Vector3, ParticleSystem, RayHelper, PointerEventTypes, Ray, ArcRotateCamera } from "@babylonjs/core";
 import Hero from "./Hero";
 import ParticleController from "./ParticleController"
 import Level from "./Level";
@@ -221,6 +221,7 @@ export default class HeorController {
                                 this.pc.doExplode(this.scene, banditAbsPos);
                                 this.bandit.isVisible = false;
                                 this.bandit = null;
+
                             }, 3000);
                         }
 
@@ -265,12 +266,20 @@ export default class HeorController {
                     keydown = true;
                     this.dxn = 1;
                 }
-                if (this.inputMap["a"] || this.inputMap["ArrowLeft"]) {
+                if (this.inputMap["a"]) {
                     step = this.player.mesh.forward;
                     step.y = 0;
                     this.player.mesh.moveWithCollisions(step.scaleInPlace(0.1));
                     keydown = true;
                     this.dxn = 3;
+                }
+                if(this.inputMap["ArrowLeft"])
+                {
+                    this.player.mesh.rotate(Vector3.Up(), -0.05);
+                }
+                if(this.inputMap["ArrowRight"])
+                {
+                    this.player.mesh.rotate(Vector3.Up(), 0.05);
                 }
                 if (this.inputMap["s"] || this.inputMap["ArrowDown"]) {
                     step = this.player.mesh.right;
@@ -279,7 +288,7 @@ export default class HeorController {
 
                     keydown = true;
                 }
-                if (this.inputMap["d"] || this.inputMap["ArrowRight"]) {
+                if (this.inputMap["d"]) {
                     step = this.player.mesh.forward;
                     step.y = 0;
                     this.player.mesh.moveWithCollisions(step.scaleInPlace(-0.1));
@@ -354,9 +363,12 @@ export default class HeorController {
             else if (eventData.type === PointerEventTypes.POINTERMOVE) {
                 // console.log("event button:",eventData.event.button);
                 if (this.isPointerDown) {
-                    const a1 = this.player.camera.alpha;
-                    this.target = Quaternion.FromEulerAngles(0, Math.PI - a1, 0);
-                    // console.log("mouse key move");
+                    if(this.player.camera instanceof ArcRotateCamera)
+                    {
+                        const a1 = this.player.camera.alpha;
+                        this.target = Quaternion.FromEulerAngles(0, Math.PI - a1, 0);
+                        // console.log("mouse key move");
+                    }
                 }
             }
             else if (eventData.type === PointerEventTypes.POINTERUP && eventData.event.button === 2) {
@@ -374,7 +386,7 @@ export default class HeorController {
 
             //checking jumps
             if (evt.sourceEvent.type == "keydown") {
-                if ((evt.sourceEvent.key == "c" || evt.sourceEvent.key == " ")) {
+                if ((evt.sourceEvent.key == "j" || evt.sourceEvent.key == " ")) {
                     this.jumpKeyDown = true;
                     // console.log("jumpKeyDown");
                 }
@@ -389,12 +401,16 @@ export default class HeorController {
             //checking jumps
             if (evt.sourceEvent.type == "keyup") {
 
-                if ((evt.sourceEvent.key == "c" || evt.sourceEvent.key == " ")) {
+                if ((evt.sourceEvent.key == "j" || evt.sourceEvent.key == " ")) {
                     this.jumpKeyDown = false;
                     // console.log("jumpKeyDown");
                 }
                 if (evt.sourceEvent.key == "z") {
                     this.level.navKeyDown = false;
+                }
+                if (evt.sourceEvent.key == "c") {
+                    this.player.switchCamera();
+                    // console.log("camera radius:",this.player.camera.radius);
                 }
             }
         }));

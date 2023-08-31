@@ -42,7 +42,7 @@ export default class Robot {
         radius: 0.1,
         height: 0.2,
         maxAcceleration: 4.0,
-        maxSpeed: 2.0,
+        maxSpeed: 5.0,
         collisionQueryRange: 0.5,
         pathOptimizationRange: 0.0,
         separationWeight: 1.0
@@ -129,6 +129,29 @@ export default class Robot {
         return origin;
     }
 
+    getRandomStartPoint() {
+        var origin = new Vector3(0, 0, 0);
+        var v = Vector3.Zero();
+        v.y = 1;
+        v.x = Scalar.RandomRange(-this.level.size/2,this.level.size/2);
+        v.z = Scalar.RandomRange(-this.level.size/2,this.level.size/2);
+        if (this.navigationPlugin) {
+            // console.log("trying find startPoint");
+
+            var sp = this.navigationPlugin.getRandomPointAround(v, 10);
+
+            for (let i = 0; i < 5; i++) {
+                if (JSON.stringify(sp) != JSON.stringify(origin)) break;
+                console.log("orgin,try again");
+                v.x = Scalar.RandomRange(-20, 20);
+                v.z = Scalar.RandomRange(-20, 20);
+                sp = this.navigationPlugin.getRandomPointAround(v, 10);
+            }
+            return sp;
+        }
+        return origin;
+    }
+
     getNextRandomPointAround(v: Vector3) {
         var origin = new Vector3(0, 0, 0);
         if (this.navigationPlugin) {
@@ -166,6 +189,7 @@ export default class Robot {
             this.level.shadowGenerator.getShadowMap()?.renderList?.push(this.alien);
             //transfrom alien to the start point
             var randomPos = this.getStartPoint(new Vector3(0, 1, 0));
+            // var randomPos = this.getRandomStartPoint();
             this.alienNav.position = randomPos;
             console.log("Alien SP:", randomPos);
             var transform = new TransformNode("alien");

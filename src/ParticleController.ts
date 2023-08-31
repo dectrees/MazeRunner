@@ -92,6 +92,9 @@ export default class ParticleController {
             this.boom = false;
             this.sps.dispose();
             this.level.banditClone = true;
+            var nextRandomPos = this.level.robot.getRandomStartPoint();
+            this.level.robot.crowdAlien.agentTeleport(this.level.robot.alienIndex,this.level.robot.navigationPlugin?.getClosestPoint(nextRandomPos));
+            console.log("allien teleport to:",this.level.robot.crowdAlien.getAgentPosition(this.level.robot.alienIndex));
         }, 5000);
     }
 

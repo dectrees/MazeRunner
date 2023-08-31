@@ -77,12 +77,12 @@ export default class Level {
         // ground.receiveShadows = true;
         var customMesh = new Mesh("custom", scene);
         var positions = [
-            -this.size, 0, this.size,
-            -this.size, 0, -this.size,
-            this.size, 0, -this.size,
-            this.size, 0, this.size,
-            -this.size, 0, this.size,
-            this.size, 0, -this.size
+            -this.size/2, 0, this.size/2,
+            -this.size/2, 0, -this.size/2,
+            this.size/2, 0, -this.size/2,
+            this.size/2, 0, this.size/2,
+            -this.size/2, 0, this.size/2,
+            this.size/2, 0, -this.size/2
         ];
         var indices = [0, 1, 2, 3, 4, 5];	
         var uvs = [0,1,0,0,1,0,1,1,0,1,1,0];

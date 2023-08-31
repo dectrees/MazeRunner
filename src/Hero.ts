@@ -1,20 +1,23 @@
-import { ArcRotateCamera, Color3, Mesh, MeshBuilder, Nullable, Quaternion, Ray, RayHelper, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { ArcRotateCamera, Color3, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Ray, RayHelper, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
 import Level from "./Level";
 import HeorController from "./HeroController";
 export default class Hero {
     level: Level;
     scene: Scene;
-    camera;
+    camera: ArcRotateCamera | FollowCamera;;
     heroController:HeorController;
     mesh:Mesh;
     shadowGenerator: ShadowGenerator;
+    private cameraArc: ArcRotateCamera;
+    private cameraFollow: FollowCamera;
     
     constructor(level: Level) {
         this.level = level;
         this.scene = level.scene;
         this.shadowGenerator = level.shadowGenerator;
-        this.camera = this.createCamera(this.scene);
-        
+        this.cameraArc = this.initArcCamera(this.scene);
+        this.cameraFollow = this.initFollowCamera(this.scene);
+        this.camera = this.cameraArc;
         this.initHero(this.scene);
         this.heroController = new HeorController(this,level);
     }
@@ -31,11 +34,12 @@ export default class Hero {
         this.camera.lockedTarget = this.mesh;
         this.shadowGenerator.getShadowMap()?.renderList?.push(this.mesh);
     }
-    private createCamera(scene: Scene) {
+    private initArcCamera(scene: Scene) {
         var camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, Vector3.Zero(), scene);
         camera.lowerRadiusLimit = 9;
-        // camera.upperRadiusLimit = 50;
-        camera.upperRadiusLimit = 300;
+        camera.upperRadiusLimit = 50;
+        camera.radius = 15;
+        // camera.upperRadiusLimit = 300;
         camera.upperBetaLimit = Math.PI / 2;
         camera.lowerBetaLimit = Math.PI / 4;
         camera.attachControl(scene.getEngine().getRenderingCanvas(), true);
@@ -43,6 +47,48 @@ export default class Hero {
         return camera;
     }
 
+    private initFollowCamera(scene: Scene): FollowCamera {
+        var camera = new FollowCamera("tankFollowCamera", new Vector3(10, 0, 10), scene);
+        camera.heightOffset = 1;
+        camera.rotationOffset = 270;
+        camera.cameraAcceleration = .1;
+        camera.maxCameraSpeed = 1;
+        camera.radius = 10;
+        // camera.upperHeightOffsetLimit = 1;
+        // camera.lowerHeightOffsetLimit = 1;
+        camera.upperRadiusLimit = 15;
+        camera.lowerRadiusLimit = 7;
+        camera.inputs.removeByType('FollowCameraPointersInput');
+        camera.inputs.removeByType("FollowCameraKeyboardMoveInput");
+        return camera;
+
+    }
+
+    switchCamera() {
+        
+        if (this.camera instanceof FollowCamera) {
+            // console.log("switch to Arc camera");
+            this.cameraFollow.detachControl();
+            this.cameraArc.attachControl(this.scene.getEngine().getRenderingCanvas(),true);
+            this.cameraArc._panningMouseButton = 1;
+            this.scene.activeCamera = this.cameraArc;
+            this.camera = this.cameraArc;
+            this.camera.lockedTarget = this.mesh;
+            this.camera.radius = 15;
+            
+        }
+        else {
+            // console.log("switch to Follow camera");
+            this.cameraArc.detachControl();
+            this.cameraFollow.attachControl(true);
+            this.scene.activeCamera = this.cameraFollow;
+            this.camera = this.cameraFollow;
+            this.camera.rotationOffset = 270;           
+            this.camera.lockedTarget = this.mesh;
+            this.camera.radius = 10;
+        }
+        
+    }
     //combined an asymmetrical obect with axis
     private asymmetryWithAxis(scene: Scene): Nullable<Mesh> {
         // var localOrigin = this.localAxes(1);
