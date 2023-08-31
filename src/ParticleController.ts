@@ -77,18 +77,17 @@ export default class ParticleController {
         sps.setParticles();
     }
 
-    doExplode(scene: Scene,bandit:Mesh) {
+    doExplode(scene: Scene,v:Vector3) {
         this.sps = new SolidParticleSystem("SPS", scene);
         const tetra = MeshBuilder.CreatePolyhedron("tetra", { size: 0.2, type: 2 });
         this.sps.addShape(tetra, 10);
         tetra.dispose();
 
         var s = this.sps.buildMesh();
-        s.position = bandit.position;
+        s.position = v;
         this.buildSPS(this.sps, s.position.y);
 
         this.boom = true;
-        bandit.dispose();
         setTimeout(() => {
             this.boom = false;
             this.sps.dispose();

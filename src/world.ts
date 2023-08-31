@@ -30,7 +30,7 @@ export default class World {
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         var instructions = new GUI.TextBlock();
-        instructions.text = "Move w/ WASD keys, look with the mouse";
+        instructions.text = "Move WASD keys,  Jump Space, Fire F";
         instructions.color = "white";
         instructions.fontSize = 16;
         instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT

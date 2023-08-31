@@ -15,6 +15,7 @@ export default class Level {
     grey: number;
     uvSize: number;
     fireball: Mesh;
+    platform: Mesh;
     shadowGenerator: ShadowGenerator;
     ani:Animations;
     bandit: Mesh;
@@ -25,6 +26,8 @@ export default class Level {
     navKeyDown = false;
     navReady = false;
     init = true;
+    alien:Mesh;
+    enableWandering = false;
 
      //particle system
      pc: ParticleController;
@@ -41,8 +44,9 @@ export default class Level {
         this.uvSize = 0.0;
         this.shadowGenerator = this.createShadowCast(scene);
         this.staticMesh = this.buildLevel(scene);
+        this.ani = new Animations(1);
+
         this.fireball = this.gameObjects(scene);
-        this.ani = new Animations();
         this.pc = new ParticleController(this.scene,this.fireball,this); 
         this.hero = new Hero(this);
         this.robot = new Robot(scene,this,this.hero);
@@ -187,7 +191,7 @@ export default class Level {
         if (staticmesh) 
         {
             staticmesh.receiveShadows = true;
-            // staticmesh.checkCollisions = true;
+            staticmesh.checkCollisions = true;
         }
         return staticmesh;
     }
@@ -202,6 +206,7 @@ export default class Level {
         platmtl.diffuseColor = new Color3(.5, .5, .8);
         platform1.material = platmtl;
         platform1.checkCollisions = true;
+        this.platform = platform1;
 
         var fireball = MeshBuilder.CreateSphere("ball platform", { diameter: 0.5 }, scene);
         fireball.material = platmtl;
@@ -209,12 +214,21 @@ export default class Level {
         fireball.position.y = 6;
         fireball.isVisible = true;
         fireball.checkCollisions = false;
+        scene.beginDirectAnimation(fireball, [this.ani.Slide],0, 4 * this.ani.frameRate, true);
 
 
         //shadows setting
         platform1.receiveShadows = true;
         this.shadowGenerator.getShadowMap()?.renderList?.push(platform1);
         return fireball;
+    }
+
+    updateObjects(v:Vector3)
+    {
+        this.fireball.position.x = v.x;
+        this.fireball.position.z = v.z;
+        this.platform.position.x = v.x;
+        this.platform.position.z = v.z;
     }
 
 }

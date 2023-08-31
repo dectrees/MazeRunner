@@ -40,6 +40,7 @@ export default class HeorController {
     trace: boolean = true;
     lightup: boolean = false;
     banditReady: boolean = false;
+    timeoutID;
 
 
     constructor(player: Hero, level: Level) {
@@ -53,7 +54,6 @@ export default class HeorController {
             this._checkInput(this.scene);
         });
         this.fireball = player.level.fireball;
-        this.bandit = player.level.bandit;
 
         this.pc = level.pc;
         this.registerAction(this.scene);
@@ -97,18 +97,23 @@ export default class HeorController {
 
     private _updateFrame() {
         if (this.bandit == null && this.banditReady && this.player.level.banditClone) {
-            this.bandit = this.fireball.clone();
             // console.log("cloned a bandit");
-            this.bandit.position = Vector3.Zero();
-            this.bandit.position.z = 20;
-            this.bandit.position.y = 5;
-            this.bandit.isVisible = true;
-            if (this.pc.ps) {
-                this.pc.ps.emitter = this.bandit;
+            if(this.level.navReady)
+            {
+                // this.bandit = this.fireball.clone();
+                this.bandit = this.level.robot.alien;
+                // this.bandit.position = this.level.robot.getStartPoint(new Vector3(0,1,0));
+                // console.log("Bandit SP:",this.bandit.position);
+                this.bandit.isVisible = true;
+   
+                if (this.pc.ps) {
+                    this.pc.ps.emitter = this.bandit;
+                }
+                this.player.level.banditClone = false;
+
+                // this.bandit.animations.push(this.player.level.ani.Slide);
+                // this.scene.beginAnimation(this.bandit, 0, 4 * this.player.level.ani.frameRate, true);
             }
-            this.bandit.animations.push(this.player.level.ani.xSlide);
-            this.player.level.banditClone = false;
-            this.scene.beginAnimation(this.bandit, 0, 4 * this.player.level.ani.frameRate, true);
         }
         if (this.player) {
             // console.log("navReady:",this.level.navReady);
@@ -117,8 +122,9 @@ export default class HeorController {
                 // console.log("finding start point");
                 var startPoint = this.level.robot.getStartPoint(new Vector3(0, 0.1, 0));
                 if (startPoint) {
-                    console.log("found a startPoint:", startPoint);
+                    console.log("player SP:", startPoint);
                     this.player.mesh.position = startPoint;
+                    this.level.updateObjects(startPoint);
                 }
                 this.level.init = false;
             }
@@ -157,6 +163,7 @@ export default class HeorController {
                 let intersect = false;
                 if (this.bandit) {
                     intersect = this.bullet.intersectsMesh(this.bandit);
+                    // console.log("bandit abs position:",this.bandit.getAbsolutePosition);
                 }
                 if ((this.distance < this.fireRanger) && (!intersect)) {
                     // console.log("distance:",this.distance);
@@ -180,8 +187,11 @@ export default class HeorController {
                         const scaling = Vector3.Zero();
                         const rotationQuaternion = Quaternion.Zero();
                         const translation = Vector3.Zero();
+                        const banditAbsPos = this.level.robot.alienNav.position;
+                        banditAbsPos.y = 6;
 
-                        Matrix.LookAtLHToRef(this.bullet.position, this.bandit.position, Axis.Y, matrix);
+                        // Matrix.LookAtLHToRef(this.bullet.position, this.bandit.position, Axis.Y, matrix);
+                        Matrix.LookAtLHToRef(this.bullet.position, banditAbsPos, Axis.Y, matrix);
                         matrix.decompose(scaling, rotationQuaternion, translation);
                         let destQuaternion = rotationQuaternion.invertInPlace();
                         this.bullet.rotationQuaternion = Quaternion.Slerp(this.bullet.rotationQuaternion, destQuaternion, 0.05);
@@ -206,18 +216,18 @@ export default class HeorController {
                                 this.pc.ps?.stop();
                                 if (this.pc.ps) this.pc.ps.emitter = null;
                                 this.lightup = false;
-                                this.pc.doExplode(this.scene, this.bandit);
+                                const banditAbsPos = this.level.robot.alienNav.position;
+                                banditAbsPos.y = 6;
+                                this.pc.doExplode(this.scene, banditAbsPos);
+                                this.bandit.isVisible = false;
                                 this.bandit = null;
                             }, 3000);
                         }
 
                     }
-                    this.bullet.position = Vector3.Zero();
-                    this.bullet.position.y = 0.7;
-                    this.bullet.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0);
-                    this.bullet.parent = this.player.mesh;
-                    this.distance = 0;
-                    this.fireStatus = false;
+                    // console.log("reset by interset or over distance");
+                    clearTimeout(this.timeoutID);
+                    this.resetBullet();
                 }
 
             }
@@ -227,6 +237,16 @@ export default class HeorController {
         }
 
 
+    }
+
+    private resetBullet()
+    {
+        this.bullet.position = Vector3.Zero();
+        this.bullet.position.y = 0.7;
+        this.bullet.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0);
+        this.bullet.parent = this.player.mesh;
+        this.distance = 0;
+        this.fireStatus = false;
     }
 
     private _checkInput(scene: Scene) {
@@ -284,6 +304,11 @@ export default class HeorController {
                             this.fireStart.copyFrom(this.bullet.position);
                             this.bullet.rotate(Vector3.Up(), Math.PI / 2);
                             // console.log("fireStart:",this.fireStart);
+
+                            this.timeoutID = setTimeout(()=>{
+                                this.resetBullet();
+                                // console.log("reset bullet from timeout");
+                            },15000);
                         }
                     }
                 }
