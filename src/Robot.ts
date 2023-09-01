@@ -88,7 +88,7 @@ export default class Robot {
         const toMergeArray = [];
         const sphere1 = MeshBuilder.CreateSphere("sphere1", { segments: 12, diameter: 2 }, scene);
         sphere1.scaling = new Vector3(1, .75, 1);;
-        toMergeArray.push(sphere1);
+        // toMergeArray.push(sphere1);
 
         for (let alpha = 0; alpha < Math.PI * 2; alpha += Math.PI / 10) {
             const sphere0 = MeshBuilder.CreateSphere("sphere0", { segments: 8, diameter: 0.5 }, scene);
@@ -102,12 +102,20 @@ export default class Robot {
 
         var alienMat = new StandardMaterial("alientMat", scene);
         alienMat.diffuseColor = new Color3(.8, .2, .2);
+        sphere1.material = alienMat;
+
+        var emissiveMat = new StandardMaterial("glow",scene);
+        emissiveMat.emissiveColor = Color3.Teal();
+        
+        
         if(merged) 
         {
-            merged.material = alienMat;
-            merged.isVisible = false;
+            merged.material = emissiveMat;
+            // merged.isVisible = false;
+            this.level.applyVarGL(merged);
+            merged.parent = sphere1;
         }
-        return merged;
+        return sphere1;
     }
 
     getStartPoint(v: Vector3) {

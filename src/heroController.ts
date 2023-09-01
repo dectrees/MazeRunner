@@ -33,7 +33,7 @@ export default class HeorController {
     pc: ParticleController;
     fireStatus = false;
     fireRanger = 50;
-    fireVelocity = 0.1;
+    fireVelocity = 0.2;
     fireDirection: Vector3 = Vector3.Zero();
     distance = 0;
     fireStart: Vector3 = Vector3.Zero();
@@ -148,7 +148,7 @@ export default class HeorController {
                     this.bullet = this.fireball.clone();
                     if (this.player) {
                         this.bullet.position = Vector3.Zero();
-                        this.bullet.position.y = 0.7;
+                        this.bullet.position.y = 0.6;
                         this.bullet.isVisible = true;
                         this.bullet.parent = this.player.mesh;
                         this.pc.ps?.stop();
@@ -243,7 +243,7 @@ export default class HeorController {
     private resetBullet()
     {
         this.bullet.position = Vector3.Zero();
-        this.bullet.position.y = 0.7;
+        this.bullet.position.y = 0.6;
         this.bullet.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0);
         this.bullet.parent = this.player.mesh;
         this.distance = 0;
@@ -261,7 +261,7 @@ export default class HeorController {
                 if (this.inputMap["w"] || this.inputMap["ArrowUp"]) {
                     step = this.player.mesh.right;
                     step.y = 0;
-                    this.player.mesh.moveWithCollisions(step.scaleInPlace(0.1));
+                    this.player.mesh.moveWithCollisions(step.scaleInPlace(0.2));
                     // this.player.position.z+=0.1;
                     keydown = true;
                     this.dxn = 1;
@@ -317,7 +317,7 @@ export default class HeorController {
                             this.timeoutID = setTimeout(()=>{
                                 this.resetBullet();
                                 // console.log("reset bullet from timeout");
-                            },15000);
+                            },10000);
                         }
                     }
                 }

@@ -96,11 +96,9 @@ export default class Hero {
         // localOrigin.rotation.y = Math.PI/2;
         var asymmetricalObject = this.asymmetry(scene);
         // localOrigin.parent = asymmetricalObject;
-        var material = new StandardMaterial("m", scene);
-        material.diffuseColor = new Color3(1, 0, 5);
+
         if (asymmetricalObject) {
-            asymmetricalObject.material = material;
-            asymmetricalObject.position.y += 0.5;
+            asymmetricalObject.position.y = 1;
             asymmetricalObject.rotationQuaternion = Quaternion.FromEulerAngles(0, -Math.PI / 2, 0);
 
         }
@@ -139,16 +137,28 @@ export default class Hero {
     }
     // an asymmetricall object  to help you not lost your direction
     private asymmetry(scene: Scene): Nullable<Mesh> {
-        var body = MeshBuilder.CreateCylinder("body", { height: 1, diameterTop: 0.2, diameterBottom: 0.5, tessellation: 6, subdivisions: 1 }, scene);
-        var front = MeshBuilder.CreateBox("front", { height: 1, width: 0.3, depth: 0.1875 }, scene);
+        var material = new StandardMaterial("m", scene);
+        material.diffuseColor = new Color3(1, 0, 5);
+
+        var emissiveMat = new StandardMaterial("glow",scene);
+        emissiveMat.emissiveColor = Color3.Teal();
+
+        var body = MeshBuilder.CreateCylinder("body", { height: 0.6, diameterTop: 0.2, diameterBottom: 0.5, tessellation: 6, subdivisions: 1 }, scene);
+        var front = MeshBuilder.CreateBox("front", { height: .6, width: 0.3, depth: 0.1875 }, scene);
         front.position.x = 0.125;
         var head = MeshBuilder.CreateSphere("head", { diameter: 0.5 }, scene);
-        head.position.y = 0.75;
+        head.position.y = 0.6;
         var arm = MeshBuilder.CreateCylinder("arm", { height: 1, diameter: 0.2, tessellation: 6, subdivisions: 1 }, scene);
         arm.rotation.x = Math.PI / 2;
-        arm.position.y = 0.25;
+        arm.position.y = 0.2;
+        var bottom = MeshBuilder.CreateCylinder("bottom", { height: 0.2, diameter: 1, tessellation: 12, subdivisions: 6 }, scene);
+        bottom.position.y = -.3
 
-        var pilot = Mesh.MergeMeshes([body, front, head, arm], true);
+        body.material = material;
+        front.material = emissiveMat;
+        arm.material = material;
+        bottom.material = emissiveMat;
+        var pilot = Mesh.MergeMeshes([body, front, head, arm,bottom], true, true, undefined, false, true);
         return pilot;
     }
 }

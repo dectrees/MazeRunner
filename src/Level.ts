@@ -1,4 +1,4 @@
-import { Mesh, Color3, Color4, MeshBuilder, Scene, SolidParticleSystem, StandardMaterial, Texture, Vector3, ShadowGenerator, DirectionalLight, VertexData } from "@babylonjs/core";
+import { Mesh, Color3, Color4, MeshBuilder, Scene, SolidParticleSystem, StandardMaterial, Texture, Vector3, ShadowGenerator, DirectionalLight, VertexData, GlowLayer } from "@babylonjs/core";
 import Animations from "./Animations";
 import Robot from "./Robot";
 import Hero from "./Hero";
@@ -30,6 +30,8 @@ export default class Level {
     alien:Mesh;
     enableWandering = false;
     UI;
+    gl:GlowLayer;
+    varGL:GlowLayer;
 
      //particle system
      pc: ParticleController;
@@ -48,6 +50,8 @@ export default class Level {
         this.staticMesh = this.buildLevel(scene);
         this.ani = new Animations(1);
         this.UI = new UI();
+        this.gl = this.createGlowLayer(scene);
+        this.varGL = this.createVarGlowLayer(scene);
 
         this.fireball = this.gameObjects(scene);
         this.pc = new ParticleController(this.scene,this.fireball,this); 
@@ -55,7 +59,39 @@ export default class Level {
         this.robot = new Robot(scene,this,this.hero);
 
     }
+    private createVarGlowLayer(scene:Scene)
+    {
+        var gl = new GlowLayer("varglow", scene);
+        var t = 0;
+        scene.onBeforeRenderObservable.add(function() {
+            t += 0.01;
+            if(t > 1000) t = 0;
+            gl.intensity = Math.cos(t) * 0.5 + 0.5;
+        });
+        return gl;
+    }
+    private createGlowLayer(scene:Scene)
+    {
+        var gl = new GlowLayer("glow", scene);
+        gl.intensity = 0.4;
+        return gl;
+    }
 
+    applyGL(mesh:Mesh)
+    {
+        if(mesh)
+        {
+            this.gl.addIncludedOnlyMesh(mesh);
+        }
+    }
+
+    applyVarGL(mesh:Mesh)
+    {
+        if(mesh)
+        {
+            this.varGL.addIncludedOnlyMesh(mesh);
+        }
+    }
     private createShadowCast(scene:Scene)
     {
         var light0 = new DirectionalLight("light", new Vector3(0, -1, 0), scene);
@@ -211,13 +247,18 @@ export default class Level {
         platform1.checkCollisions = true;
         this.platform = platform1;
 
+        var emissiveMat = new StandardMaterial("glow",scene);
+        emissiveMat.emissiveColor = Color3.Yellow();
+
         var fireball = MeshBuilder.CreateSphere("ball platform", { diameter: 0.5 }, scene);
-        fireball.material = platmtl;
+        fireball.material = emissiveMat;
         // this.fireball.position.x = 4;
         fireball.position.y = 6;
         fireball.isVisible = true;
         fireball.checkCollisions = false;
         scene.beginDirectAnimation(fireball, [this.ani.Slide],0, 4 * this.ani.frameRate, true);
+
+        this.applyGL(fireball);
 
 
         //shadows setting
