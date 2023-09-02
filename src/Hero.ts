@@ -1,15 +1,18 @@
-import { ArcRotateCamera, Color3, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Ray, RayHelper, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { ArcRotateCamera, Color3, FollowCamera, Mesh, MeshBuilder, Nullable, Quaternion, Ray, RayHelper, Scene, ShadowGenerator, StandardMaterial, UniversalCamera, Vector3, Viewport } from "@babylonjs/core";
 import Level from "./Level";
 import HeorController from "./HeroController";
 export default class Hero {
     level: Level;
     scene: Scene;
-    camera: ArcRotateCamera | FollowCamera;;
+    camera: ArcRotateCamera | FollowCamera|UniversalCamera;;
     heroController:HeorController;
     mesh:Mesh;
     shadowGenerator: ShadowGenerator;
+    originQuaternion  = Quaternion.FromEulerAngles(0, 0, 0);
     private cameraArc: ArcRotateCamera;
     private cameraFollow: FollowCamera;
+    private cameraUniversal: UniversalCamera;
+    private cameraView: UniversalCamera;
     
     constructor(level: Level) {
         this.level = level;
@@ -17,6 +20,7 @@ export default class Hero {
         this.shadowGenerator = level.shadowGenerator;
         this.cameraArc = this.initArcCamera(this.scene);
         this.cameraFollow = this.initFollowCamera(this.scene);
+        this.cameraUniversal = this.initUniversalCamera(this.scene);
         this.camera = this.cameraArc;
         this.initHero(this.scene);
         this.heroController = new HeorController(this,level);
@@ -44,7 +48,9 @@ export default class Hero {
         camera.lowerBetaLimit = Math.PI / 4;
         camera.attachControl(scene.getEngine().getRenderingCanvas(), true);
         camera._panningMouseButton = 1;
+        camera.layerMask = 0x1FFFFFFF;
         // camera.checkCollisions = true;
+        // camera.collisionRadius = new Vector3(1,1,1);
         return camera;
     }
 
@@ -55,8 +61,6 @@ export default class Hero {
         camera.cameraAcceleration = .1;
         camera.maxCameraSpeed = 1;
         camera.radius = 10;
-        // camera.upperHeightOffsetLimit = 1;
-        // camera.lowerHeightOffsetLimit = 1;
         camera.upperRadiusLimit = 15;
         camera.lowerRadiusLimit = 7;
         camera.inputs.removeByType('FollowCameraPointersInput');
@@ -65,28 +69,78 @@ export default class Hero {
 
     }
 
+    private initUniversalCamera(scene: Scene): UniversalCamera {
+        var camera = new UniversalCamera("universalCamera", new Vector3(-5, 1.5, 0), scene);
+        camera.rotationQuaternion = Quaternion.FromEulerAngles(0, Math.PI/2, 0);
+        // camera.setTarget(new Vector3(0.1,0.51,0));
+        camera.checkCollisions = true;
+        camera.ellipsoid = new Vector3(1, 1.5, 1);
+        // camera.inputs.removeByType('FreeCameraPointersInput');
+        camera.inputs.removeByType("FreeCameraKeyboardMoveInput");
+        // console.log("before parenting:",camera.rotationQuaternion);
+        camera.parent = this.mesh;
+        this.originQuaternion = camera.rotationQuaternion;
+        // console.log("after parenting:",camera.rotationQuaternion);
+        camera.layerMask = 0x1FFFFFFF;
+        camera.speed = 0.02;
+
+        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(-8, 4, 0), scene);
+        this.cameraView.setTarget(new Vector3(0,1,0));
+        this.cameraView.parent = this.mesh;
+        this.cameraView.viewport = new Viewport(0.01,0.68,0.2,0.3);
+        
+        return camera;
+
+    }
+
     switchCamera() {
         
-        if (this.camera instanceof FollowCamera) {
-            // console.log("switch to Arc camera");
-            this.cameraFollow.detachControl();
+        if (this.camera instanceof UniversalCamera) {
+            console.log("switch to Arc camera");
+            // console.log("cam len to arc:",this.scene.activeCameras?.length);
+            this.scene.activeCameras = [];
+            // console.log("cam len to Arc after:",this.scene.activeCameras?.length);
+            // this.scene.activeCameras?.map((cam)=>console.log(cam.name));
+            
+            this.cameraUniversal.detachControl();
+            // this.scene.activeCameras = null;
             this.cameraArc.attachControl(this.scene.getEngine().getRenderingCanvas(),true);
             this.cameraArc._panningMouseButton = 1;
-            this.scene.activeCamera = this.cameraArc;
             this.camera = this.cameraArc;
-            this.camera.lockedTarget = this.mesh;
+            this.camera.lockedTarget = this.mesh; 
             this.camera.radius = 15;
+            this.scene.activeCamera = this.cameraArc;
             
         }
         else {
             // console.log("switch to Follow camera");
+            // this.cameraArc.detachControl();
+            // this.cameraFollow.attachControl(true);
+            // this.scene.activeCamera = this.cameraFollow;
+            // this.camera = this.cameraFollow;
+            // this.camera.rotationOffset = 270;           
+            // this.camera.lockedTarget = this.mesh;
+            // this.camera.radius = 10;
+            
+            console.log("switch to Universal Camera");
+            // console.log("cam len to uni:",this.scene.activeCameras?.length);
+
             this.cameraArc.detachControl();
-            this.cameraFollow.attachControl(true);
-            this.scene.activeCamera = this.cameraFollow;
-            this.camera = this.cameraFollow;
-            this.camera.rotationOffset = 270;           
-            this.camera.lockedTarget = this.mesh;
-            this.camera.radius = 10;
+            this.cameraUniversal.attachControl(true);    
+            this.scene.activeCamera = this.cameraUniversal;
+
+            this.scene.activeCameras?.push(this.cameraUniversal);
+            this.scene.activeCameras?.push(this.cameraView );
+            // console.log("cam len to uni after:",this.scene.activeCameras?.length);
+            // this.scene.activeCameras?.map((cam)=>console.log(cam.name));
+
+            this.camera = this.cameraUniversal;  
+            this.camera.parent = this.mesh;  
+            this.cameraView.parent = this.mesh;   
+            console.log("after switch:",this.camera.rotationQuaternion);
+            // this.camera.checkCollisions = true;
+            // this.camera.ellipsoid = new Vector3(1, 1.5, 1); 
+            
         }
         
     }

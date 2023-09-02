@@ -6,6 +6,7 @@ export default class UI {
     constructor()
     {
         this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        if(this.advancedTexture.layer) this.advancedTexture.layer.layerMask = 0x10000000;
         this.createInstruction();
         this.countButton = this.createCountButton();
     }
@@ -28,11 +29,11 @@ export default class UI {
         hint.text = "When you get lost, fire your head to guide you!";
         hint.color = "white";
         // hint.fontSize = 18;
-        hint.top = 10;
+        // hint.top = 10;
         hint.left = 10;
         hint.style = style;
         hint.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        hint.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        hint.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.advancedTexture.addControl(hint);
     
     }

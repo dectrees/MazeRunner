@@ -57,7 +57,7 @@ export default class Level {
         this.pc = new ParticleController(this.scene,this.fireball,this); 
         this.hero = new Hero(this);
         this.robot = new Robot(scene,this,this.hero);
-
+        // scene.collisionsEnabled = true;
     }
     private createVarGlowLayer(scene:Scene)
     {

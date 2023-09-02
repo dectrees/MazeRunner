@@ -1,4 +1,4 @@
-import { ActionManager, Axis, ExecuteCodeAction, Matrix, Mesh, Nullable, Quaternion, Scene, Vector3, ParticleSystem, RayHelper, PointerEventTypes, Ray, ArcRotateCamera } from "@babylonjs/core";
+import { ActionManager, Axis, ExecuteCodeAction, Matrix, Mesh, Nullable, Quaternion, Scene, Vector3, ParticleSystem, RayHelper, PointerEventTypes, Ray, ArcRotateCamera, UniversalCamera } from "@babylonjs/core";
 import Hero from "./Hero";
 import ParticleController from "./ParticleController"
 import Level from "./Level";
@@ -9,6 +9,7 @@ export default class HeorController {
     inputMap = {};
     source = Quaternion.FromEulerAngles(0, 0, 0);
     target = Quaternion.FromEulerAngles(0, 0, 0);
+
     onObject = false;
 
     //Input detection
@@ -128,7 +129,7 @@ export default class HeorController {
                 }
                 this.level.init = false;
             }
-            if (this.isPointerDown) {
+            if (this.isPointerDown && this.player.camera instanceof ArcRotateCamera) {
 
                 this.source = this.player.mesh.rotationQuaternion!;
                 if (this.source) {
@@ -137,6 +138,23 @@ export default class HeorController {
                 else {
                     console.log("souce is null");
                 }
+            }
+            if(!this.isPointerDown && this.player.camera instanceof UniversalCamera)
+            {
+                // const smatrix = Matrix.Zero();
+                // const sscaling = Vector3.Zero();
+                // const srotationQuaternion = Quaternion.Zero();
+                // const stranslation = Vector3.Zero();
+
+                // let step = Vector3.Zero();
+                // step.copyFrom(this.player.mesh.right);
+                // // step.y = 0;
+                // step = step.normalize();
+                // Matrix.LookAtLHToRef(Vector3.Zero(), step, Axis.Y, smatrix);
+                // smatrix.decompose(sscaling, srotationQuaternion, stranslation);
+                // let targetQuaternion = srotationQuaternion.invertInPlace();
+         
+                this.player.camera.rotationQuaternion = Quaternion.Slerp(this.player.camera.rotationQuaternion, this.player.originQuaternion, 0.05);
             }
             if (this.pc.ps) {
                 // this.ps.emitter = new Vector3(this.player.position.x, this.player.position.y+0.5,this.player.position.z);
@@ -148,7 +166,8 @@ export default class HeorController {
                     this.bullet = this.fireball.clone();
                     if (this.player) {
                         this.bullet.position = Vector3.Zero();
-                        this.bullet.position.y = 0.6;
+                        this.bullet.position.y = .6;
+                        // this.bullet.position.x = -0.8;
                         this.bullet.isVisible = true;
                         this.bullet.parent = this.player.mesh;
                         this.pc.ps?.stop();
@@ -275,11 +294,11 @@ export default class HeorController {
                 }
                 if(this.inputMap["ArrowLeft"])
                 {
-                    this.player.mesh.rotate(Vector3.Up(), -0.02);
+                    this.player.mesh.rotate(Vector3.Up(), -0.01);
                 }
                 if(this.inputMap["ArrowRight"])
                 {
-                    this.player.mesh.rotate(Vector3.Up(), 0.02);
+                    this.player.mesh.rotate(Vector3.Up(), 0.01);
                 }
                 if (this.inputMap["s"] || this.inputMap["ArrowDown"]) {
                     step = this.player.mesh.right;
@@ -367,8 +386,13 @@ export default class HeorController {
                     {
                         const a1 = this.player.camera.alpha;
                         this.target = Quaternion.FromEulerAngles(0, Math.PI - a1, 0);
-                        // console.log("mouse key move");
                     }
+                    // else if(this.player.camera instanceof UniversalCamera){
+                    //     const roty  = this.player.camera.rotation.y;
+                    //     // console.log("cam rotation y:",roty);
+                    //     this.target = Quaternion.FromEulerAngles(0, roty-Math.PI/2, 0);
+                    //     // this.player.mesh.rotationQuaternion = Quaternion.FromEulerAngles(0, roty-Math.PI/2, 0);
+                    // }
                 }
             }
             else if (eventData.type === PointerEventTypes.POINTERUP && eventData.event.button === 2) {
