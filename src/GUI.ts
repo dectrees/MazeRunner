@@ -14,7 +14,7 @@ export default class UI {
     createInstruction()
     {
         var instructions = new GUI.TextBlock();
-        instructions.text = "Move WASD /Fire F /Camera Switch C /Jump SPACE";
+        instructions.text = "Move WASD /Fire F /Camera Switch C /Carrier Switch G/Jump SPACE";
         instructions.color = "white";
         instructions.fontSize = 16;
         instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
@@ -26,14 +26,14 @@ export default class UI {
         style.fontStyle = "bold";
 
         var hint = new GUI.TextBlock();
-        hint.text = "When you get lost, fire your head to guide you!";
+        hint.text = "Fire head to guide you!";
         hint.color = "white";
         // hint.fontSize = 18;
         // hint.top = 10;
-        hint.left = 10;
+        hint.left = -10;
         hint.style = style;
-        hint.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        hint.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        hint.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        hint.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
         this.advancedTexture.addControl(hint);
     
     }
@@ -41,7 +41,7 @@ export default class UI {
     createCountButton()
     {
         var button = GUI.Button.CreateSimpleButton("button", "UFO Destroyed: 0");
-        button.top = "15px";
+        button.top = "30px";
         button.left = "-15px";
         button.width = "250px";
         button.height = "50px";

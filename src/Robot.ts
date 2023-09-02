@@ -10,6 +10,7 @@ export default class Robot {
     //AI
     navigationPlugin?: RecastJSPlugin;
     agents;
+    robots;
     agentIndex;
     alien:Mesh;
     alienNav: Mesh;
@@ -234,6 +235,7 @@ export default class Robot {
             this.crowd = this.navigationPlugin.createCrowd(10, 0.1, scene);
 
             this.agents = [];
+            this.robots = [];
             for (let i = 0; i < 1; i++) {
                 var width = 0.50;
                 var agentCube = MeshBuilder.CreateBox("cube", { size: width, height: width }, scene);
@@ -260,6 +262,7 @@ export default class Robot {
                 var agentIndex = this.crowd.addAgent(randomPos, this.agentParams, transform);
                 this.agentIndex = agentIndex;
                 this.agents.push({ idx: agentIndex, trf: transform, mesh: agentCube, target: targetCube });
+                this.robots.push(robot);
             }
 
 

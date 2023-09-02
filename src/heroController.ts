@@ -43,6 +43,8 @@ export default class HeorController {
     banditReady: boolean = false;
     timeoutID;
 
+    bulletParent:Mesh;
+
 
     constructor(player: Hero, level: Level) {
         this.scene = player.scene;
@@ -57,6 +59,7 @@ export default class HeorController {
         this.fireball = player.level.fireball;
 
         this.pc = level.pc;
+        this.bulletParent = player.mesh;
         this.registerAction(this.scene);
         this.registerUpdate(this.scene);
     }
@@ -95,7 +98,22 @@ export default class HeorController {
             this.player?.mesh.moveWithCollisions(this.velocity);
         });
     }
-
+    private switchBulletParent(){
+        
+        if(this.bulletParent === this.player.mesh)
+        {
+            // console.log("switch bullet parent to agent");
+            this.bullet.position.y = 0.5;
+            this.bulletParent = this.level.robot.robots[0];     
+        }
+        else
+        {
+            // console.log("switch bullet parent to player");
+            this.bullet.position.y = 0.6;
+            this.bulletParent = this.player.mesh;
+        }
+        this.bullet.parent = this.bulletParent;
+    }
     private _updateFrame() {
         if (this.bandit == null && this.banditReady && this.player.level.banditClone) {
             // console.log("cloned a bandit");
@@ -169,7 +187,8 @@ export default class HeorController {
                         this.bullet.position.y = .6;
                         // this.bullet.position.x = -0.8;
                         this.bullet.isVisible = true;
-                        this.bullet.parent = this.player.mesh;
+                        // this.bullet.parent = this.player.mesh;
+                        this.bullet.parent = this.bulletParent;
                         this.pc.ps?.stop();
                         if (this.pc.ps) {
                             this.pc.ps.emitter = null;
@@ -262,9 +281,12 @@ export default class HeorController {
     private resetBullet()
     {
         this.bullet.position = Vector3.Zero();
-        this.bullet.position.y = 0.6;
+        if(this.bulletParent === this.player.mesh)
+            this.bullet.position.y = 0.6;
+        else
+            this.bullet.position.y = 0.5;
         this.bullet.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0);
-        this.bullet.parent = this.player.mesh;
+        this.bullet.parent = this.bulletParent;
         this.distance = 0;
         this.fireStatus = false;
     }
@@ -435,6 +457,9 @@ export default class HeorController {
                 if (evt.sourceEvent.key == "c") {
                     this.player.switchCamera();
                     // console.log("camera radius:",this.player.camera.radius);
+                }
+                if (evt.sourceEvent.key == "g") {
+                    this.switchBulletParent();
                 }
             }
         }));
