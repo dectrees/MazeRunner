@@ -1,14 +1,16 @@
 
 A simple game prototype for demostration of some basic game techniques:
 
-camera control, ist and 3rd person camera switch
-input control
-ray cast detection
-particle system
-solid particle system
-crowd system
-auto navigation mesh and path seeking
-target trace and interpolation
+camera control, ist and 3rd person camera switch;
+input control;
+ray cast detection;
+particle system;
+solid particle system;
+crowd system;
+auto navigation mesh and path seeking;
+target trace and interpolation;
+glow layer material;
+animation;
 
 ![image](https://github.com/dectrees/MazeRunner/assets/49392792/9767328c-b99c-4081-837e-0c6223ecdd87)
 
