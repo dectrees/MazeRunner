@@ -1,16 +1,14 @@
 import { Engine, Scene } from "@babylonjs/core";
 import './index.css';
-import Player from "./Player";
 import World from "./World";
 import Level from "./Level";
-import Hero from "./Hero";
 
 
 export default class Game {
     engine: Engine;
     scene: Scene;
     canvas: HTMLCanvasElement;
-    level:Level;
+    // level:Level;
 
     constructor() {
         this.canvas = document.createElement("canvas");
@@ -41,7 +39,8 @@ export default class Game {
         new World(scene);
         // new Player(this);
        
-        this.level = new Level(scene, 1);
+        // this.level = new Level(scene, 1);
+        new Level(scene, 1);
     }
 
 }

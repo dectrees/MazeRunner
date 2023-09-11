@@ -316,11 +316,11 @@ export default class HeorController {
                 }
                 if(this.inputMap["ArrowLeft"])
                 {
-                    this.player.mesh.rotate(Vector3.Up(), -0.01);
+                    this.player.mesh.rotate(Vector3.Up(), -0.02);
                 }
                 if(this.inputMap["ArrowRight"])
                 {
-                    this.player.mesh.rotate(Vector3.Up(), 0.01);
+                    this.player.mesh.rotate(Vector3.Up(), 0.02);
                 }
                 if (this.inputMap["s"] || this.inputMap["ArrowDown"]) {
                     step = this.player.mesh.right;

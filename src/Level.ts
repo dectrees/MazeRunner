@@ -142,7 +142,7 @@ export default class Level {
         vertexData.applyToMesh(customMesh)
         var matground = new StandardMaterial("mat", scene);
         customMesh.material = matground;
-        matground.diffuseTexture = new Texture("./src/assets/texture/grass.png")
+        matground.diffuseTexture = new Texture("./assets/texture/grass.png")
         matground.diffuseTexture.uScale = 100;
         matground.diffuseTexture.vScale = 100;
         // matground.diffuseColor = new Color3(.1, .1, .1);
@@ -152,7 +152,7 @@ export default class Level {
         // customMesh.isPickable = true;
 
         //SPS 
-        var url = "./src/assets/texture/glassbuilding.jpg";
+        var url = "./assets/texture/glassbuilding.jpg";
         var mat = new StandardMaterial("mat1", scene);
         var texture = new Texture(url, scene);
         mat.diffuseTexture = texture;
@@ -191,7 +191,7 @@ export default class Level {
 
   
         var wallMaterial = new StandardMaterial("wall", scene);
-        wallMaterial.diffuseTexture = new Texture("./src/assets/texture/glassbuilding.jpg", scene);
+        wallMaterial.diffuseTexture = new Texture("./assets/texture/glassbuilding.jpg", scene);
         wallMaterial.diffuseTexture.uScale = 1;
         wallMaterial.diffuseTexture.vScale = 10;
 

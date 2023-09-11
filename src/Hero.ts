@@ -70,7 +70,7 @@ export default class Hero {
     }
 
     private initUniversalCamera(scene: Scene): UniversalCamera {
-        var camera = new UniversalCamera("universalCamera", new Vector3(-5, 1.5, 0), scene);
+        var camera = new UniversalCamera("universalCamera", new Vector3(-8, 1.5, 0), scene);
         camera.rotationQuaternion = Quaternion.FromEulerAngles(0, Math.PI/2, 0);
         // camera.setTarget(new Vector3(0.1,0.51,0));
         camera.checkCollisions = true;
@@ -84,7 +84,7 @@ export default class Hero {
         camera.layerMask = 0x1FFFFFFF;
         camera.speed = 0.02;
 
-        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(-8, 4, 0), scene);
+        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 4, 4), scene);
         this.cameraView.setTarget(new Vector3(0,1,0));
         this.cameraView.parent = this.mesh;
         this.cameraView.viewport = new Viewport(0.01,0.68,0.2,0.3);
@@ -137,7 +137,7 @@ export default class Hero {
             this.camera = this.cameraUniversal;  
             this.camera.parent = this.mesh;  
             this.cameraView.parent = this.mesh;   
-            console.log("after switch:",this.camera.rotationQuaternion);
+            // console.log("after switch:",this.camera.rotationQuaternion);
             // this.camera.checkCollisions = true;
             // this.camera.ellipsoid = new Vector3(1, 1.5, 1); 
             
