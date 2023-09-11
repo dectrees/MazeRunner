@@ -25,7 +25,8 @@ glow layer material;
 
 animation;
 
-![image](https://github.com/dectrees/MazeRunner/assets/49392792/9767328c-b99c-4081-837e-0c6223ecdd87)
+
+![20230911114256](https://github.com/dectrees/MazeRunner/assets/49392792/257805f3-379f-4a3b-9029-7e06dd4fc875)
 
 Video:https://github.com/dectrees/MazeRunner/assets/49392792/b75d662d-6897-4660-b71a-c283aea71e38
 
