@@ -1,6 +1,10 @@
 
 A simple game prototype for demostration of some basic game techniques:
 
+play the game here:
+
+https://dectrees.github.io/MazeRunner/
+
 camera control, ist and 3rd person camera switch;
 input control;
 ray cast detection;
