@@ -75,7 +75,7 @@ export default class HeorController {
 
         if (this.level.UI.isMobile) {
             this.player.switchCamera();   
-            this._setUpMobile();  
+            this._setUpMobile(); 
         }
     }
 

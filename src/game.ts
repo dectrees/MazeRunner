@@ -3,12 +3,11 @@ import './index.css';
 import World from "./World";
 import Level from "./Level";
 
-
 export default class Game {
     engine: Engine;
     scene: Scene;
     canvas: HTMLCanvasElement;
-    // level:Level;
+    level:Level;
 
     constructor() {
         this.canvas = document.createElement("canvas");
@@ -21,16 +20,20 @@ export default class Game {
         this.scene.collisionsEnabled = true;
         this.engine.enableOfflineSupport = false;
         this.gameinit(this.scene);
+        this.resizeCanvas(this.canvas);
 
         window.addEventListener("resize", () => {
             if (this.engine) {
+                this.resizeCanvas(this.canvas);
                 this.engine.resize();
+
             }
         });
 
         this.engine.runRenderLoop(
             () => {
                 this.scene.render();
+                // this.level.UI.advancedTexture.scaleTo(this.engine.getRenderWidth(), this.engine.getRenderHeight());
             }
         );
     }
@@ -39,9 +42,16 @@ export default class Game {
         new World(scene);
         // new Player(this);
        
-        // this.level = new Level(scene, 1);
-        new Level(scene, 1);
+        this.level = new Level(scene, 1);
+        // new Level(scene, 1);
     }
+
+    private resizeCanvas (canvas: HTMLCanvasElement) {
+        canvas.width = window.innerWidth;
+        // canvas.width = window.innerWidth - myDrawerWidth;
+        canvas.height = window.innerHeight;
+        // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
+      }
 
 }
 
