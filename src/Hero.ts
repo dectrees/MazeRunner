@@ -104,7 +104,7 @@ export default class Hero {
             
             this.cameraUniversal.detachControl();
             // this.scene.activeCameras = null;
-            this.cameraArc.attachControl(this.scene.getEngine().getRenderingCanvas(),true);
+            this.cameraArc.attachControl(this.scene.getEngine().getRenderingCanvas(),false);
             this.cameraArc._panningMouseButton = 1;
             this.camera = this.cameraArc;
             this.camera.lockedTarget = this.mesh; 
@@ -126,7 +126,7 @@ export default class Hero {
             // console.log("cam len to uni:",this.scene.activeCameras?.length);
 
             this.cameraArc.detachControl();
-            this.cameraUniversal.attachControl(true);    
+            this.cameraUniversal.attachControl(false);    
             this.scene.activeCamera = this.cameraUniversal;
 
             this.scene.activeCameras?.push(this.cameraUniversal);
