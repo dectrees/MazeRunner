@@ -34,7 +34,7 @@ export default class Game {
                         this.engine.resize();
                         console.log("resize...");
                         this.resizing = false;
-                    },500);
+                    },100);
                 }
             }
         });
