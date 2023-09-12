@@ -29,10 +29,12 @@ export default class Game {
                 if(!this.resizing)
                 {
                     this.resizing = true;
-                    this.resizeCanvas(this.canvas);
-                    this.engine.resize();
-                    console.log("resize...");
-                    this.resizing = false;
+                    setTimeout(()=>{
+                        this.resizeCanvas(this.canvas);
+                        this.engine.resize();
+                        console.log("resize...");
+                        this.resizing = false;
+                    },500);
                 }
             }
         });
