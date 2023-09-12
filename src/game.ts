@@ -8,6 +8,7 @@ export default class Game {
     scene: Scene;
     canvas: HTMLCanvasElement;
     level:Level;
+    resizing:boolean = false;
 
     constructor() {
         this.canvas = document.createElement("canvas");
@@ -25,9 +26,14 @@ export default class Game {
 
         window.addEventListener("resize", () => {
             if (this.engine) {
-                this.resizeCanvas(this.canvas);
-                this.engine.resize();
-                console.log("resize...");
+                if(!this.resizing)
+                {
+                    this.resizing = true;
+                    this.resizeCanvas(this.canvas);
+                    this.engine.resize();
+                    console.log("resize...");
+                    this.resizing = false;
+                }
             }
         });
 
