@@ -49,7 +49,7 @@ export default class Game {
 
     private resizeCanvas (canvas: HTMLCanvasElement) {
 
-        if(window.innerWidth > window.innerHeight)
+        // if(window.innerWidth > window.innerHeight)
         {
             canvas.width = window.innerWidth;
             // canvas.width = window.innerWidth - myDrawerWidth;
