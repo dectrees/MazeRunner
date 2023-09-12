@@ -21,6 +21,7 @@ export default class Game {
         this.engine.enableOfflineSupport = false;
         this.gameinit(this.scene);
         this.resizeCanvas(this.canvas);
+        this.canvas.focus();
 
         window.addEventListener("resize", () => {
             if (this.engine) {
@@ -47,12 +48,15 @@ export default class Game {
     }
 
     private resizeCanvas (canvas: HTMLCanvasElement) {
-        canvas.width = window.innerWidth;
-        // canvas.width = window.innerWidth - myDrawerWidth;
-        canvas.height = window.innerHeight;
-        // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
+
+        if(window.innerWidth > window.innerHeight)
+        {
+            canvas.width = window.innerWidth;
+            // canvas.width = window.innerWidth - myDrawerWidth;
+            canvas.height = window.innerHeight;
+            // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
+        }
       }
 
 }
-
 new Game()
