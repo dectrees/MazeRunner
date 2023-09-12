@@ -203,4 +203,8 @@ export default class UI {
     updateCount(){
         this.countButton.children[0].text = "UFO Destroyed: " + (++this.count); 
     }
+    debugINFO(n:number)
+    {
+        this.countButton.children[0].text = "debug:"+n;
+    }
 }
