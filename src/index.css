@@ -27,8 +27,8 @@ a:hover {
 }
 
 body {
-  touch-action: pan-y;
-  overflow: hidden;
+  /* touch-action: pan-y;
+  overflow: hidden; */
   margin: 0;
   display: flex;
   place-items: center;

@@ -21,13 +21,13 @@ export default class Game {
         this.engine.enableOfflineSupport = false;
         this.gameinit(this.scene);
         this.resizeCanvas(this.canvas);
-        this.canvas.focus();
+        // this.canvas.focus();
 
         window.addEventListener("resize", () => {
             if (this.engine) {
                 this.resizeCanvas(this.canvas);
                 this.engine.resize();
-
+                console.log("resize...");
             }
         });
 
