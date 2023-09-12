@@ -140,7 +140,7 @@ export default class Hero {
             // console.log("after switch:",this.camera.rotationQuaternion);
             // this.camera.checkCollisions = true;
             // this.camera.ellipsoid = new Vector3(1, 1.5, 1); 
-            
+            this.scene.cameraToUseForPointers = this.cameraUniversal;
         }
         
     }

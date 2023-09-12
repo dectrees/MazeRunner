@@ -45,6 +45,16 @@ export default class HeorController {
 
     bulletParent:Mesh;
 
+    //Mobile Input trackers
+    public mobileToss: boolean;
+    public mobileLeft: boolean;
+    public mobileRight: boolean;
+    public mobileUp: boolean;
+    public mobileDown: boolean;
+    private _mobileJump: boolean;
+    private _mobileDash: boolean;
+    
+
 
     constructor(player: Hero, level: Level) {
         this.scene = player.scene;
@@ -62,6 +72,69 @@ export default class HeorController {
         this.bulletParent = player.mesh;
         this.registerAction(this.scene);
         this.registerUpdate(this.scene);
+
+        if (this.level.UI.isMobile) {
+            this.player.switchCamera();   
+            this._setUpMobile();  
+        }
+    }
+
+    private _setUpMobile(): void {
+        //Jump Button
+        this.level.UI.jumpBtn.onPointerDownObservable.add(() => {
+            this._mobileJump = true;
+            this.jumpKeyDown = true;
+        });
+        this.level.UI.jumpBtn.onPointerUpObservable.add(() => {
+            this._mobileJump = false;
+            this.jumpKeyDown = false;
+        });
+
+        //Dash Button
+        this.level.UI.dashBtn.onPointerDownObservable.add(() => {
+            this._mobileDash = true;
+        });
+        this.level.UI.dashBtn.onPointerUpObservable.add(() => {
+            this._mobileDash = false;
+        });
+
+        //Arrow Keys
+        this.level.UI.leftBtn.onPointerDownObservable.add(() => {
+            this.mobileLeft = true;
+        });
+        this.level.UI.leftBtn.onPointerUpObservable.add(() => {
+            this.mobileLeft = false;
+        });
+
+        this.level.UI.rightBtn.onPointerDownObservable.add(() => {
+            this.mobileRight = true;
+        });
+        this.level.UI.rightBtn.onPointerUpObservable.add(() => {
+            this.mobileRight = false;
+        });
+
+        this.level.UI.upBtn.onPointerDownObservable.add(() => {
+            this.mobileUp = true;
+        });
+        this.level.UI.upBtn.onPointerUpObservable.add(() => {
+            this.mobileUp = false;
+        });
+
+        this.level.UI.downBtn.onPointerDownObservable.add(() => {
+            this.mobileDown = true;
+        });
+        this.level.UI.downBtn.onPointerUpObservable.add(() => {
+            this.mobileDown = false;
+        });
+
+        this.level.UI.tossBtn.onPointerDownObservable.add(() => {
+            this.mobileToss = true;
+        });
+        this.level.UI.tossBtn.onPointerUpObservable.add(() => {
+            this.mobileToss = false;
+            this.switchBulletParent();
+        });
+
     }
 
     private registerUpdate(scene: Scene) {
@@ -299,7 +372,7 @@ export default class HeorController {
             let keydown = false;
             let step = Vector3.Zero();
             if (!this.dashing) {
-                if (this.inputMap["w"] || this.inputMap["ArrowUp"]) {
+                if (this.inputMap["w"] || this.inputMap["ArrowUp"] || this.mobileUp)  {
                     step = this.player.mesh.right;
                     step.y = 0;
                     this.player.mesh.moveWithCollisions(step.scaleInPlace(0.2));
@@ -314,15 +387,15 @@ export default class HeorController {
                     keydown = true;
                     this.dxn = 3;
                 }
-                if(this.inputMap["ArrowLeft"])
+                if(this.inputMap["ArrowLeft"] || this.mobileLeft)
                 {
                     this.player.mesh.rotate(Vector3.Up(), -0.02);
                 }
-                if(this.inputMap["ArrowRight"])
+                if(this.inputMap["ArrowRight"] || this.mobileRight)
                 {
                     this.player.mesh.rotate(Vector3.Up(), 0.02);
                 }
-                if (this.inputMap["s"] || this.inputMap["ArrowDown"]) {
+                if (this.inputMap["s"] || this.inputMap["ArrowDown"] || this.mobileDown) {
                     step = this.player.mesh.right;
                     step.y = 0;
                     this.player.mesh.moveWithCollisions(step.scaleInPlace(-0.1));
@@ -342,7 +415,7 @@ export default class HeorController {
                 } else {
                     this.dxn = 0;
                 }
-                if (this.inputMap["f"]) {
+                if (this.inputMap["f"] || this._mobileDash) {
                     if (this.bullet) {
                         if (!this.fireStatus) {
                             this.fireStatus = true;
