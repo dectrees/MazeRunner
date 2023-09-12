@@ -61,7 +61,7 @@ export default class Game {
             // canvas.width = window.innerWidth - myDrawerWidth;
             canvas.height = window.innerHeight;
             // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
-            this.level.UI.debugINFO(canvas.height);
+            this.level.UI.debugINFO(canvas.width,canvas.height);
         }
       }
 
