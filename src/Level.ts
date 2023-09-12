@@ -49,7 +49,7 @@ export default class Level {
         this.shadowGenerator = this.createShadowCast(scene);
         this.staticMesh = this.buildLevel(scene);
         this.ani = new Animations(1);
-        this.UI = new UI();
+        // this.UI = new UI();
         this.gl = this.createGlowLayer(scene);
         this.varGL = this.createVarGlowLayer(scene);
 

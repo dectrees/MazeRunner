@@ -73,15 +73,16 @@ export default class HeorController {
         this.registerAction(this.scene);
         this.registerUpdate(this.scene);
 
-        if (this.level.UI.isMobile) {
-            this.player.switchCamera();   
-            this._setUpMobile(); 
-        }
+        // if (this.level.UI.isMobile) {
+        //     this.player.switchCamera();   
+        //     // this._setUpMobile(); 
+        // }
     }
 
     private _setUpMobile(): void {
         //Jump Button
         this.level.UI.jumpBtn.onPointerDownObservable.add(() => {
+
             this._mobileJump = true;
             this.jumpKeyDown = true;
         });
