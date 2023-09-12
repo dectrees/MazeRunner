@@ -32,7 +32,7 @@ export default class Game {
                     setTimeout(()=>{
                         this.resizeCanvas(this.canvas);
                         this.engine.resize();
-                        console.log("resize...");
+                        // console.log("resize...");
                         this.resizing = false;
                     },100);
                 }
@@ -63,7 +63,7 @@ export default class Game {
             // canvas.width = window.innerWidth - myDrawerWidth;
             canvas.height = window.innerHeight;
             // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
-            this.level.UI.debugINFO(canvas.width,canvas.height);
+            // this.level.UI.debugINFO(canvas.width,canvas.height);
         }
       }
 

@@ -170,10 +170,10 @@ export default class UI {
 
     createCountButton()
     {
-        var button = GUI.Button.CreateSimpleButton("button", "UFO Destroyed: 0");
+        var button = GUI.Button.CreateSimpleButton("button", "UFO: 0");
         button.top = "30px";
         button.left = "-15px";
-        button.width = "250px";
+        button.width = "150px";
         button.height = "50px";
         button.cornerRadius = 20;
         button.thickness = 4;
@@ -181,6 +181,7 @@ export default class UI {
         button.children[0].fontSize = 24;
         button.color = "#FF7979";
         button.background = "#007900";
+        button.alpha = 0.3;
 
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -201,7 +202,7 @@ export default class UI {
         return button;
     }
     updateCount(){
-        this.countButton.children[0].text = "UFO Destroyed: " + (++this.count); 
+        this.countButton.children[0].text = "UFO: " + (++this.count); 
     }
     debugINFO(w:number,h:number)
     {
