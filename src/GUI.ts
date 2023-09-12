@@ -16,7 +16,18 @@ export default class UI {
     constructor()
     {
         this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        if(this.advancedTexture.layer) this.advancedTexture.layer.layerMask = 0x10000000;
+        if(this.advancedTexture.layer) 
+        {
+            this.advancedTexture.layer.layerMask = 0x10000000;
+            if(this.isMobile)
+            {
+                this.advancedTexture.idealWidth = 600;
+                // this.advancedTexture.idealHeight = 800;
+                // this.advancedTexture.useSmallestIdeal = true;
+            }
+ 
+
+        }
         
         this.countButton = this.createCountButton();
         this.createHint();
@@ -77,61 +88,61 @@ export default class UI {
 
             //--MOVEMENT BUTTONS--
             // container for movement buttons (section left side of screen)
-            const moveContainer = new GUI.Rectangle();
-            moveContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            moveContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-            moveContainer.height = 0.4;
-            moveContainer.width = 0.4;
-            moveContainer.left = "2%";
-            moveContainer.top = "-2%";
-            moveContainer.thickness = 0;
-            this.advancedTexture.addControl(moveContainer);
+            // const moveContainer = new GUI.Rectangle();
+            // moveContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            // moveContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+            // moveContainer.height = 0.4;
+            // moveContainer.width = 0.4;
+            // moveContainer.left = "2%";
+            // moveContainer.top = "-2%";
+            // moveContainer.thickness = 0;
+            // this.advancedTexture.addControl(moveContainer);
 
-            //grid for placement of arrow keys
-            const grid = new GUI.Grid();
-            grid.addColumnDefinition(.4);
-            grid.addColumnDefinition(.4);
-            grid.addColumnDefinition(.4);
-            grid.addRowDefinition(.5);
-            grid.addRowDefinition(.5);
-            moveContainer.addControl(grid);
+            // //grid for placement of arrow keys
+            // const grid = new GUI.Grid();
+            // grid.addColumnDefinition(.4);
+            // grid.addColumnDefinition(.4);
+            // grid.addColumnDefinition(.4);
+            // grid.addRowDefinition(.5);
+            // grid.addRowDefinition(.5);
+            // moveContainer.addControl(grid);
 
-            const leftBtn = GUI.Button.CreateImageOnlyButton("left", "./assets/texture/arrowBtn.png");
-            leftBtn.thickness = 0;
-            leftBtn.rotation = -Math.PI / 2;
-            leftBtn.color = "white";
-            leftBtn.alpha = 0.8;
-            leftBtn.width = 0.8;
-            leftBtn.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            this.leftBtn = leftBtn;
+            // const leftBtn = GUI.Button.CreateImageOnlyButton("left", "./assets/texture/arrowBtn.png");
+            // leftBtn.thickness = 0;
+            // leftBtn.rotation = -Math.PI / 2;
+            // leftBtn.color = "white";
+            // leftBtn.alpha = 0.8;
+            // leftBtn.width = 0.8;
+            // leftBtn.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            // this.leftBtn = leftBtn;
 
-            const rightBtn = GUI.Button.CreateImageOnlyButton("right", "./assets/texture/arrowBtn.png");
-            rightBtn.rotation = Math.PI / 2;
-            rightBtn.thickness = 0;
-            rightBtn.color = "white";
-            rightBtn.alpha = 0.8;
-            rightBtn.width = 0.8;
-            rightBtn.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-            this.rightBtn = rightBtn;
+            // const rightBtn = GUI.Button.CreateImageOnlyButton("right", "./assets/texture/arrowBtn.png");
+            // rightBtn.rotation = Math.PI / 2;
+            // rightBtn.thickness = 0;
+            // rightBtn.color = "white";
+            // rightBtn.alpha = 0.8;
+            // rightBtn.width = 0.8;
+            // rightBtn.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+            // this.rightBtn = rightBtn;
 
-            const upBtn = GUI.Button.CreateImageOnlyButton("up", "./assets/texture/arrowBtn.png");
-            upBtn.thickness = 0;
-            upBtn.alpha = 0.8;
-            upBtn.color = "white";
-            this.upBtn = upBtn;
+            // const upBtn = GUI.Button.CreateImageOnlyButton("up", "./assets/texture/arrowBtn.png");
+            // upBtn.thickness = 0;
+            // upBtn.alpha = 0.8;
+            // upBtn.color = "white";
+            // this.upBtn = upBtn;
 
-            const downBtn = GUI.Button.CreateImageOnlyButton("down", "./assets/texture/arrowBtn.png");
-            downBtn.thickness = 0;
-            downBtn.rotation = Math.PI;
-            downBtn.color = "white";
-            downBtn.alpha = 0.8;
-            this.downBtn = downBtn;
+            // const downBtn = GUI.Button.CreateImageOnlyButton("down", "./assets/texture/arrowBtn.png");
+            // downBtn.thickness = 0;
+            // downBtn.rotation = Math.PI;
+            // downBtn.color = "white";
+            // downBtn.alpha = 0.8;
+            // this.downBtn = downBtn;
 
-            //arrange the buttons in the grid
-            grid.addControl(leftBtn, 1, 0);
-            grid.addControl(rightBtn, 1, 2);
-            grid.addControl(upBtn, 0, 1);
-            grid.addControl(downBtn, 1, 1);
+            // //arrange the buttons in the grid
+            // grid.addControl(leftBtn, 1, 0);
+            // grid.addControl(rightBtn, 1, 2);
+            // grid.addControl(upBtn, 0, 1);
+            // grid.addControl(downBtn, 1, 1);
 
         }
 
@@ -151,6 +162,7 @@ export default class UI {
         // hint.top = 10;
         hint.left = -10;
         hint.style = style;
+        // hint.resizeToFit = true;
         hint.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         hint.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
         this.advancedTexture.addControl(hint);
@@ -181,7 +193,7 @@ export default class UI {
         button.children[0].fontSize = 24;
         button.color = "#FF7979";
         button.background = "#007900";
-        button.alpha = 0.3;
+        button.alpha = 0.5;
 
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
