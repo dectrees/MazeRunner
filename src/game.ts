@@ -2,6 +2,7 @@ import { Engine, Scene } from "@babylonjs/core";
 import './index.css';
 import World from "./World";
 import Level from "./Level";
+import UI from "./GUI";
 
 export default class Game {
     engine: Engine;
@@ -20,24 +21,30 @@ export default class Game {
         this.scene = new Scene(this.engine);
         this.scene.collisionsEnabled = true;
         this.engine.enableOfflineSupport = false;
+
+        this.resizeCanvas(this.canvas);
+        this.engine.resize();
+
         this.gameinit(this.scene);
-        // this.resizeCanvas(this.canvas);
-
         window.addEventListener("resize", () => {
-            // if (this.engine) {
-            //     if(!this.resizing)
-            //     {
-            //         this.resizing = true;
-            //         setTimeout(()=>{
-            //             this.resizeCanvas(this.canvas);
-            //             this.engine.resize();
-            //             // console.log("resize...");
-            //             this.resizing = false;
-            //         },100);
-            //     }
-            // }
-
-            this.engine.resize();
+            if (this.engine) {
+                if(!this.resizing)
+                {
+                    this.resizing = true;
+                    setTimeout(()=>{
+                        this.resizeCanvas(this.canvas);
+                        this.engine.resize();
+                        // console.log("resizing...");
+                        if(this.level.UI.isMobile)
+                        {
+                            // console.log("update mobile UI");
+                            this.level.UI.updateUI();
+                        }
+                        this.resizing = false;
+                    },100);
+                }
+            }
+            
         });
 
         this.engine.runRenderLoop(

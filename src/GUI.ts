@@ -17,20 +17,9 @@ export default class UI {
         this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         if (this.advancedTexture.layer) {
             this.advancedTexture.layer.layerMask = 0x10000000;
-            this.advancedTexture.idealWidth = 844;
-            this.advancedTexture.idealHeight = 390;
-            this.advancedTexture.useSmallestIdeal = true;
-
-            // if (this.isMobile) {
-            //     this.advancedTexture.idealWidth = 390;
-            //     this.advancedTexture.idealHeight = 844;
-            //     this.advancedTexture.useSmallestIdeal = true;
-            // }
-            // else{
-            //     this.advancedTexture.idealWidth = 958;
-            //     this.advancedTexture.idealHeight = 837;
-            //     this.advancedTexture.useSmallestIdeal = true;
-            // }
+            // this.advancedTexture.idealWidth = 414;
+            // this.advancedTexture.idealHeight = 985;
+            // this.advancedTexture.useSmallestIdeal = true;
             this.createHTMLControl();
         }
         
@@ -41,14 +30,26 @@ export default class UI {
 
 
     createHTMLControl() {
+        const jumpBtn = document.getElementById("customBT");
+        const fireBtn = document.getElementById("customBTfire");
+        const switchBtn = document.getElementById("customBTswitch");
         //Check if Mobile, add button controls
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             this.isMobile = true; // tells inputController to track mobile inputs
+           if(window.innerWidth < window.innerHeight) 
+           {
+                if(jumpBtn) jumpBtn.style.right = "80px";
+                if(fireBtn) fireBtn.style.right = "5px";
+                if(switchBtn) switchBtn.style.right = "5px";
+           }
+           else{
+                if(jumpBtn) jumpBtn.style.right = "150px";
+                if(fireBtn) fireBtn.style.right = "50px";
+                if(switchBtn) switchBtn.style.right = "50px";
+           }
         }
         else{
-            const jumpBtn = document.getElementById("customBT");
-            const fireBtn = document.getElementById("customBTfire");
-            const switchBtn = document.getElementById("customBTswitch");
+
             if(jumpBtn) jumpBtn.style.display = "none";
             if(fireBtn) fireBtn.style.display = "none";
             if(switchBtn) switchBtn.style.display = "none";
@@ -198,7 +199,10 @@ export default class UI {
 
     createCountButton() {
         var button = GUI.Button.CreateSimpleButton("button", "UFO: 0");
-        button.top = "30px";
+        if(this.isMobile)
+            button.top = "10px";
+        else
+            button.top = "30px";
         button.left = "-15px";
         button.width = "150px";
         button.height = "50px";
@@ -222,5 +226,23 @@ export default class UI {
     }
     debugINFO(w: number, h: number) {
         this.countButton.children[0].text = "debug:" + w + ":" + h;
+    }
+
+    updateUI()
+    {
+        this.advancedTexture.dispose();
+        this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        this.countButton.dispose();
+
+        if (this.advancedTexture.layer) {
+            this.advancedTexture.layer.layerMask = 0x10000000;
+            this.createHTMLControl();
+        }
+        
+        this.countButton = this.createCountButton();
+
+        if (!this.isMobile) this.createInstruction();
+
+        this.countButton.children[0].text = "UFO : " + (this.count);
     }
 }
