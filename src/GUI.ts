@@ -17,16 +17,24 @@ export default class UI {
         this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         if (this.advancedTexture.layer) {
             this.advancedTexture.layer.layerMask = 0x10000000;
-            if (this.isMobile) {
-                // this.advancedTexture.idealWidth = 600;
-                // this.advancedTexture.idealHeight = 800;
-                // this.advancedTexture.useSmallestIdeal = true;
-            }
+            this.advancedTexture.idealWidth = 844;
+            this.advancedTexture.idealHeight = 390;
+            this.advancedTexture.useSmallestIdeal = true;
+
+            // if (this.isMobile) {
+            //     this.advancedTexture.idealWidth = 390;
+            //     this.advancedTexture.idealHeight = 844;
+            //     this.advancedTexture.useSmallestIdeal = true;
+            // }
+            // else{
+            //     this.advancedTexture.idealWidth = 958;
+            //     this.advancedTexture.idealHeight = 837;
+            //     this.advancedTexture.useSmallestIdeal = true;
+            // }
             this.createHTMLControl();
         }
         
         this.countButton = this.createCountButton();
-        this.createHint();
 
         if (!this.isMobile) this.createInstruction();
     }
@@ -36,16 +44,14 @@ export default class UI {
         //Check if Mobile, add button controls
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             this.isMobile = true; // tells inputController to track mobile inputs
-            // const jumpBtn = document.createElement("jumpBtn");
-        
-            // jumpBtn.style.backgroundImage = "./assets/texture/bBtn.png";
-            // jumpBtn.style.zIndex = 10;
-            // jumpBtn.style.position = "absolute";
-            // jumpBtn.style.bottom = "50px";
-            // jumpBtn.style.right = "10px";
-            // document.body.appendChild(jumpBtn);
-
-            // this.jumpBtn = jumpBtn;
+        }
+        else{
+            const jumpBtn = document.getElementById("customBT");
+            const fireBtn = document.getElementById("customBTfire");
+            const switchBtn = document.getElementById("customBTswitch");
+            if(jumpBtn) jumpBtn.style.display = "none";
+            if(fireBtn) fireBtn.style.display = "none";
+            if(switchBtn) switchBtn.style.display = "none";
         }
     }
     createGUIControl() {
@@ -172,11 +178,8 @@ export default class UI {
         var hint = new GUI.TextBlock();
         hint.text = "Fire head to guide you!";
         hint.color = "white";
-        // hint.fontSize = 18;
-        // hint.top = 10;
         hint.left = -10;
         hint.style = style;
-        // hint.resizeToFit = true;
         hint.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         hint.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
         this.advancedTexture.addControl(hint);
@@ -190,7 +193,7 @@ export default class UI {
         instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         instructions.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.advancedTexture.addControl(instructions);
-
+        this.createHint();
     }
 
     createCountButton() {
@@ -210,23 +213,12 @@ export default class UI {
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
-        // var clicks = 0;
-        // button.onPointerClickObservable.add(function () {
-        //     clicks++;
-        //     if (clicks % 2 == 0) {
-        //     button.background = "#EB4D4B";
-        //     } else {
-        //     button.background = "#007900";
-        //     }
-        //     button.children[0].text = "UFO Destroyed: " + clicks;
-        // });
-
         this.advancedTexture.addControl(button);
 
         return button;
     }
     updateCount() {
-        this.countButton.children[0].text = "UFO: " + (++this.count);
+        this.countButton.children[0].text = "UFO : " + (++this.count);
     }
     debugINFO(w: number, h: number) {
         this.countButton.children[0].text = "debug:" + w + ":" + h;

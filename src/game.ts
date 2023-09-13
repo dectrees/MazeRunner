@@ -21,22 +21,23 @@ export default class Game {
         this.scene.collisionsEnabled = true;
         this.engine.enableOfflineSupport = false;
         this.gameinit(this.scene);
-        this.resizeCanvas(this.canvas);
-        // this.canvas.focus();
+        // this.resizeCanvas(this.canvas);
 
         window.addEventListener("resize", () => {
-            if (this.engine) {
-                if(!this.resizing)
-                {
-                    this.resizing = true;
-                    setTimeout(()=>{
-                        this.resizeCanvas(this.canvas);
-                        this.engine.resize();
-                        // console.log("resize...");
-                        this.resizing = false;
-                    },100);
-                }
-            }
+            // if (this.engine) {
+            //     if(!this.resizing)
+            //     {
+            //         this.resizing = true;
+            //         setTimeout(()=>{
+            //             this.resizeCanvas(this.canvas);
+            //             this.engine.resize();
+            //             // console.log("resize...");
+            //             this.resizing = false;
+            //         },100);
+            //     }
+            // }
+
+            this.engine.resize();
         });
 
         this.engine.runRenderLoop(
