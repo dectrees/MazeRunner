@@ -1,37 +1,54 @@
 import * as GUI from "@babylonjs/gui";
 export default class UI {
-    advancedTexture:GUI.AdvancedDynamicTexture;
-    countButton:GUI.Button;
-    count:number = 0;
+    advancedTexture: GUI.AdvancedDynamicTexture;
+    countButton: GUI.Button;
+    count: number = 0;
 
     //Mobile
     public isMobile: boolean = false;
-    public jumpBtn: GUI.Button;
+    public jumpBtn: HTMLElement;
     public dashBtn: GUI.Button;
     public tossBtn: GUI.Button;
     public leftBtn: GUI.Button;
     public rightBtn: GUI.Button;
     public upBtn: GUI.Button;
     public downBtn: GUI.Button;
-    constructor()
-    {
+    constructor() {
         this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        if(this.advancedTexture.layer) 
-        {
+        if (this.advancedTexture.layer) {
             this.advancedTexture.layer.layerMask = 0x10000000;
-            if(this.isMobile)
-            {
-                this.advancedTexture.idealWidth = 600;
+            if (this.isMobile) {
+                // this.advancedTexture.idealWidth = 600;
                 // this.advancedTexture.idealHeight = 800;
                 // this.advancedTexture.useSmallestIdeal = true;
             }
- 
-
+            this.createHTMLControl();
         }
         
         this.countButton = this.createCountButton();
         this.createHint();
 
+        if (!this.isMobile) this.createInstruction();
+    }
+
+
+    createHTMLControl() {
+        //Check if Mobile, add button controls
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            this.isMobile = true; // tells inputController to track mobile inputs
+            // const jumpBtn = document.createElement("jumpBtn");
+        
+            // jumpBtn.style.backgroundImage = "./assets/texture/bBtn.png";
+            // jumpBtn.style.zIndex = 10;
+            // jumpBtn.style.position = "absolute";
+            // jumpBtn.style.bottom = "50px";
+            // jumpBtn.style.right = "10px";
+            // document.body.appendChild(jumpBtn);
+
+            // this.jumpBtn = jumpBtn;
+        }
+    }
+    createGUIControl() {
         //Check if Mobile, add button controls
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             this.isMobile = true; // tells inputController to track mobile inputs
@@ -143,14 +160,11 @@ export default class UI {
             // grid.addControl(rightBtn, 1, 2);
             // grid.addControl(upBtn, 0, 1);
             // grid.addControl(downBtn, 1, 1);
-
         }
-
-        if(!this.isMobile) this.createInstruction();
     }
 
-    createHint()
-    {
+
+    createHint() {
         var style = this.advancedTexture.createStyle();
         style.fontSize = 24;
         style.fontStyle = "bold";
@@ -168,8 +182,7 @@ export default class UI {
         this.advancedTexture.addControl(hint);
     }
 
-    createInstruction()
-    {
+    createInstruction() {
         var instructions = new GUI.TextBlock();
         instructions.text = "Move WASD /Fire F /Camera Switch C /Carrier Switch G/Jump SPACE";
         instructions.color = "white";
@@ -177,11 +190,10 @@ export default class UI {
         instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         instructions.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.advancedTexture.addControl(instructions);
-    
+
     }
 
-    createCountButton()
-    {
+    createCountButton() {
         var button = GUI.Button.CreateSimpleButton("button", "UFO: 0");
         button.top = "30px";
         button.left = "-15px";
@@ -197,7 +209,7 @@ export default class UI {
 
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    
+
         // var clicks = 0;
         // button.onPointerClickObservable.add(function () {
         //     clicks++;
@@ -208,16 +220,15 @@ export default class UI {
         //     }
         //     button.children[0].text = "UFO Destroyed: " + clicks;
         // });
-    
-        this.advancedTexture.addControl(button); 
-        
+
+        this.advancedTexture.addControl(button);
+
         return button;
     }
-    updateCount(){
-        this.countButton.children[0].text = "UFO: " + (++this.count); 
+    updateCount() {
+        this.countButton.children[0].text = "UFO: " + (++this.count);
     }
-    debugINFO(w:number,h:number)
-    {
-        this.countButton.children[0].text = "debug:"+w+":"+h;
+    debugINFO(w: number, h: number) {
+        this.countButton.children[0].text = "debug:" + w + ":" + h;
     }
 }
