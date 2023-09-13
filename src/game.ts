@@ -1,5 +1,5 @@
 import { Engine, Scene } from "@babylonjs/core";
-import './index.css';
+import '../index.css';
 import World from "./World";
 import Level from "./Level";
 
