@@ -50,14 +50,14 @@ body {
   bottom: 50px;
   color: white;
   border-color: none;
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
   background-color: rgba(255, 255, 255, 0);
   background-image: url("../assets/texture/bBtn.png");
-  background-size: 40px;
+  background-size: 80px;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.5;
@@ -71,14 +71,14 @@ body {
   bottom: 50px;
   color: white;
   border-color: none;
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
   background-color: rgba(255, 255, 255, 0);
   background-image: url("../assets/texture/aBtn.png");
-  background-size: 40px;
+  background-size: 80px;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.5;
@@ -92,14 +92,14 @@ body {
   bottom: 150px;
   color: white;
   border-color: none;
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
   background-color: rgba(255, 255, 255, 0);
   background-image: url("../assets/texture/arrowBtn.png");
-  background-size: 40px;
+  background-size: 80px;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.5;
