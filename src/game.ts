@@ -26,6 +26,7 @@ export default class Game {
         this.engine.resize();
 
         this.gameinit(this.scene);
+        this.canvas.focus();
         window.addEventListener("resize", () => {
             if (this.engine) {
                 if(!this.resizing)
@@ -39,8 +40,9 @@ export default class Game {
                         {
                             // console.log("update mobile UI");
                             this.level.UI.updateUI();
-                            this.level.hero.heroController.updateJoystick();
+                            // this.level.hero.heroController.updateJoystick();
                         }
+                        this.canvas.focus();
                         this.resizing = false;
                     },100);
                 }

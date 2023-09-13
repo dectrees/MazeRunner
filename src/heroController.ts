@@ -430,7 +430,7 @@ export default class HeorController {
             if (this.leftJoystick.pressed && this.leftJoystick.deltaPosition.y != 0) {
                 frontVector = this.player.mesh.right;
                 frontVector.y = 0;
-                this.player.mesh.moveWithCollisions(frontVector.scaleInPlace(this.leftJoystick.deltaPosition.y * this.speedMovement * this.deltaTime));
+                this.player.mesh.moveWithCollisions(frontVector.scaleInPlace(this.leftJoystick.deltaPosition.y * this.speedMovement * this.deltaTime*0.5));
                 // if (this.leftJoystick.deltaPosition.y > 0)
                 //     this.player.mesh.moveWithCollisions(frontVector.scaleInPlace(this.leftJoystick.deltaPosition.y * this.speedMovement * this.deltaTime));
                 // else
