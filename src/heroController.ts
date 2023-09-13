@@ -84,12 +84,15 @@ export default class HeorController {
         if (this.level.UI.isMobile) {
             this.player.switchCamera();
             this.setJoystickController();
-            // this._setUpMobile();
             this._setupHTMLMobile();
 
         }
     }
 
+    updateJoystick()
+    {
+        this.setJoystickController();
+    }
     private _setupHTMLMobile() {
         const jumpBtn = document.getElementById("customBT");
         const fireBtn = document.getElementById("customBTfire");

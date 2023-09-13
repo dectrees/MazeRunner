@@ -39,6 +39,7 @@ export default class Game {
                         {
                             // console.log("update mobile UI");
                             this.level.UI.updateUI();
+                            this.level.hero.heroController.updateJoystick();
                         }
                         this.resizing = false;
                     },100);
