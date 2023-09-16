@@ -47,7 +47,7 @@ body {
   z-index: 199;
   position: absolute;
   right: 150px;
-  bottom: 50px;
+  bottom: 20px;
   color: white;
   border-color: none;
   width: 80px;
@@ -68,7 +68,7 @@ body {
   z-index: 199;
   position: absolute;
   right: 50px;
-  bottom: 50px;
+  bottom: 20px;
   color: white;
   border-color: none;
   width: 80px;
@@ -89,7 +89,7 @@ body {
   z-index: 199;
   position: absolute;
   right: 50px;
-  bottom: 150px;
+  bottom: 130px;
   color: white;
   border-color: none;
   width: 80px;
