@@ -29,8 +29,7 @@ PC:
 ![20230911114256](https://github.com/dectrees/MazeRunner/assets/49392792/257805f3-379f-4a3b-9029-7e06dd4fc875)
 
 Mobile:
-![4fff3d42a8d59d969311ab3fee2305d](https://github.com/dectrees/MazeRunner/assets/49392792/682e7f5a-1eaf-47fa-b6e0-8a9eabbc87f7)
-
+![20230916151245](https://github.com/dectrees/MazeRunner/assets/49392792/59a00efb-f87a-4d06-8843-da89325fbf80)
 
 Video:https://github.com/dectrees/MazeRunner/assets/49392792/b75d662d-6897-4660-b71a-c283aea71e38
 
