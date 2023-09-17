@@ -440,8 +440,15 @@ export default class HeorController {
                 this.leftJoystick.deltaPosition.y = 0;
             }
             // Rotate Left or Right
-            if (this.leftJoystick.pressed && this.leftJoystick.deltaPosition.x != 0) {
-                this.player.mesh.rotate(Vector3.Up(), this.leftJoystick.deltaPosition.x * this.speedMovement * this.deltaTime * 0.1);
+            if (this.leftJoystick.pressed && this.leftJoystick.deltaPosition.x > 0) {
+                if(this.level.hero.detectCameraCollision()!= 2)
+                    this.player.mesh.rotate(Vector3.Up(), this.leftJoystick.deltaPosition.x * this.speedMovement * this.deltaTime * 0.05);
+
+            }
+
+            if (this.leftJoystick.pressed && this.leftJoystick.deltaPosition.x < 0) {
+                if(this.level.hero.detectCameraCollision()!= 1)
+                    this.player.mesh.rotate(Vector3.Up(), this.leftJoystick.deltaPosition.x * this.speedMovement * this.deltaTime * 0.05);
 
             }
         });
