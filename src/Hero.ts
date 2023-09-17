@@ -84,8 +84,8 @@ export default class Hero {
         camera.layerMask = 0x1FFFFFFF;
         camera.speed = 0.02;
 
-        // this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 4, 4), scene);
-        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 10, 0), scene);
+        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 4, 4), scene);
+        // this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 10, 0), scene);
         this.cameraView.setTarget(new Vector3(0,1,0));
         this.cameraView.parent = this.mesh;
         this.cameraView.viewport = new Viewport(0.01,0.68,0.2,0.3);
