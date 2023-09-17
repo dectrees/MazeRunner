@@ -471,10 +471,12 @@ export default class HeorController {
                     this.dxn = 3;
                 }
                 if (this.inputMap["ArrowLeft"] || this.mobileLeft) {
-                    this.player.mesh.rotate(Vector3.Up(), -0.02);
+                    if(this.level.hero.detectCameraCollision() != 1)
+                        this.player.mesh.rotate(Vector3.Up(), -0.02);
                 }
                 if (this.inputMap["ArrowRight"] || this.mobileRight) {
-                    this.player.mesh.rotate(Vector3.Up(), 0.02);
+                    if(this.level.hero.detectCameraCollision() != 2)
+                        this.player.mesh.rotate(Vector3.Up(), 0.02);
                 }
                 if (this.inputMap["s"] || this.inputMap["ArrowDown"] || this.mobileDown) {
                     step = this.player.mesh.right;

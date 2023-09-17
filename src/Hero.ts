@@ -73,8 +73,8 @@ export default class Hero {
         var camera = new UniversalCamera("universalCamera", new Vector3(-8, 1.5, 0), scene);
         camera.rotationQuaternion = Quaternion.FromEulerAngles(0, Math.PI/2, 0);
         // camera.setTarget(new Vector3(0.1,0.51,0));
-        camera.checkCollisions = true;
-        camera.ellipsoid = new Vector3(1, 1.5, 1);
+        // camera.checkCollisions = true;
+        // camera.ellipsoid = new Vector3(1, 1.5, 1);
         // camera.inputs.removeByType('FreeCameraPointersInput');
         camera.inputs.removeByType("FreeCameraKeyboardMoveInput");
         // console.log("before parenting:",camera.rotationQuaternion);
@@ -84,7 +84,8 @@ export default class Hero {
         camera.layerMask = 0x1FFFFFFF;
         camera.speed = 0.02;
 
-        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 4, 4), scene);
+        // this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 4, 4), scene);
+        this.cameraView = new UniversalCamera("ViewCamera", new Vector3(8, 10, 0), scene);
         this.cameraView.setTarget(new Vector3(0,1,0));
         this.cameraView.parent = this.mesh;
         this.cameraView.viewport = new Viewport(0.01,0.68,0.2,0.3);
@@ -136,7 +137,8 @@ export default class Hero {
 
             this.camera = this.cameraUniversal;  
             this.camera.parent = this.mesh;  
-            this.cameraView.parent = this.mesh;   
+            this.cameraView.parent = this.mesh; 
+
             // console.log("after switch:",this.camera.rotationQuaternion);
             // this.camera.checkCollisions = true;
             // this.camera.ellipsoid = new Vector3(1, 1.5, 1); 
@@ -189,6 +191,68 @@ export default class Hero {
         return local_origin;
 
     }
+
+    detectCameraCollision():number
+    {
+        if(this.camera instanceof UniversalCamera)
+        {
+            const origin = this.camera.globalPosition;
+            // const origin = this.mesh.position;
+            // console.log("camera pos:",origin);
+            let right = new Vector3(1,0,0);
+            let left = new Vector3(-1,0,0);
+
+            right = this.vecToWorld(right);
+            left = this.vecToWorld(left);
+
+            let directionRight = right.subtract(origin);
+	        directionRight = Vector3.Normalize(directionRight);
+
+            let directionLeft = left.subtract(origin);
+	        directionLeft = Vector3.Normalize(directionLeft);
+
+            let length = 1;
+            const rayRight = new Ray(origin, directionRight, length);
+            const rayLeft = new Ray(origin, directionLeft, length);
+            // const rayRightHelper = new RayHelper(rayRight);
+            // rayRightHelper.show(this.scene);
+
+            const pickRight = this.scene.pickWithRay(rayRight);
+            if (pickRight) { 
+                if(pickRight.pickedMesh)
+                {
+                    // console.log("ray touch right");
+                    // console.log("pick:",pickRight.pickedMesh.name);
+                    return 1;
+                }
+                
+            }
+
+            const pickLeft = this.scene.pickWithRay(rayLeft);
+            // const rayLeftHelper = new RayHelper(rayLeft);
+            // rayLeftHelper.show(this.scene);
+
+            if (pickLeft) {
+                if(pickLeft.pickedMesh)
+                {
+                    // console.log("ray touch left");
+                    // console.log("pick:",pickLeft.pickedMesh.name);
+                    return 2;
+                }
+            }
+
+        }
+        return 0;
+    }
+
+    private vecToWorld(vector:Vector3){
+        var m = this.camera.getWorldMatrix();
+        // var m = this.mesh.getWorldMatrix();
+        var v = Vector3.TransformCoordinates(vector, m);
+
+        return v;		 
+    }
+
     // an asymmetricall object  to help you not lost your direction
     private asymmetry(scene: Scene): Nullable<Mesh> {
         var material = new StandardMaterial("m", scene);

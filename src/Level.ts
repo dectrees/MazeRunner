@@ -57,7 +57,7 @@ export default class Level {
         this.pc = new ParticleController(this.scene,this.fireball,this); 
         this.hero = new Hero(this);
         this.robot = new Robot(scene,this,this.hero);
-        // scene.collisionsEnabled = true;
+        scene.collisionsEnabled = true;
     }
     private createVarGlowLayer(scene:Scene)
     {
@@ -114,7 +114,7 @@ export default class Level {
         // groundMaterial.backFaceCulling = false;
         // ground.material = groundMaterial;
         // ground.receiveShadows = true;
-        var customMesh = new Mesh("custom", scene);
+        var customMesh = new Mesh("spsmesh", scene);
         var positions = [
             -this.size/2, 0, this.size/2,
             -this.size/2, 0, -this.size/2,
