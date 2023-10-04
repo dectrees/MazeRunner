@@ -1,5 +1,5 @@
 
-A simple game prototype for demostration of some basic game techniques:
+A simple game prototype for demonstration of some basic game techniques:
 
 play the game here:
 
